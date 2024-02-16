@@ -1,0 +1,7 @@
+{
+    "user": "postgres",
+    "password": "postgres",
+    "port": 5432,
+    "server": "localhost",
+    "db": "linkedin_job_postings"
+  }
