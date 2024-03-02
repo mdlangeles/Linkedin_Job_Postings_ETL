@@ -1,5 +1,5 @@
 ### Linkedin Job Postings
-       By: Emmanuel Quintero & María de los Ángeles Amú
+By: Emmanuel Quintero & María de los Ángeles Amú
 
 ## Overview
 In this project, we are going to analyze, manipulate and visualize data about job postings in Linkedin, as part of an ETL project. We used SQLAlchemy as an Object-Relational Mapping (ORM) tool connected to PostgreSQL, and we will generate visual representations using PowerBI.
