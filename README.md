@@ -168,5 +168,5 @@ pip install requirements
 8.6 Congrats!, you can now select the table you want to work with, you can upload it to the dashboard and make your own dashboard
 
 ## Our Dashboard
-Here is our dashboard ;) [Our Dashboard]("C:\Users\USER\linkedin_job_postings_etl\linkedin_jobs_visualizations.pdf")
+Here is our dashboard ;) [Our Dashboard]()
 
