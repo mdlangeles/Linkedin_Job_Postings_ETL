@@ -18,8 +18,11 @@ In this project, we are going to analyze, manipulate and visualize data about jo
     
 - Jupyter Notebook
 
+## Repository Organization:
+Our repository has a folder called Data, which is where the datasets in xlsx format that we use for the development of the project are. It also has the notebook where all the code and functionalities of the project were created except for the visualizations that were created with Power BI. In the repository there is also the README of the project and the requirements.txt
+
 ## Dataset used
-The dataset used in this project is the Linkedin Job Postings - 2023 , imported from Kaggle. It contains 28 columns and 33246 rows that correspond to some works published on Linkedin.
+For this project, we used 3 datasets, extracted from Kaggle, the first of which was: It contains 28 columns and 33246 rows that correspond to some works published on Linkedin.
 The columns names of “job_postings.csv” before data transformation are:
 
 1. job_id: The job ID as defined by LinkedIn
@@ -76,7 +79,15 @@ The columns names of “job_postings.csv” before data transformation are:
 
 29. compensation_type: Type of compensation for the job.
 
-The columns names of “job_postings.csv”
+The second data set that we use is called "job_industries" and has 2 columns (job_id and industry_id) where each job is related to an id of an industry. We use this dataset later (section 3) as well as our third dataset (industries). The columns names of “job_industries” before data transformation are:
+
+1. job_id: The job_id column corresponds to the job_id's found in our first dataset
+2. industry_id: The industry_id column corresponds to an id assigned to each industry to be related to each job later.
+
+The third data set that we used is called "industries" and has 2 columns (industry_id and industry_name ) where the industry_id is the id corresponding to each industry and the industry_name column is the name associated with that industry_id. The columns names of "industries" before data transdormation are:
+
+1. industry_id: Id assigned to each industry
+2. industry_name: Industry name
 
 ## Requirements
 
@@ -126,12 +137,12 @@ pip install requirements
 ```
 6. Create a database in PostgreSQL
 7. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 5 sections :
-- I recommend you start with section #1: Import modules and libraries, Connection to PostgreSQL, which is where you will import the libraries and modules that were necessary for the development of the  workshop.
-    ##### Note: In the second block of code in section #1 you must change the name of the JSON file to the name of the JSON file that you need to create to be able to make the connection to the database. In my case the name of my file was `connection.json`. If you decide to name your file the same way, remember to change the values specified in the `Database Configuration` field located in the README.
-- The second step is to run section 2, which is where the table is created in the database and the csv data is inserted into the table once the table is created in PostgreSQL
-- The third step is to run section 3, which is where the exploratory analysis of the data was carried out in order to better understand its structure, dimensions of the table and some histograms.
-- The fourth step is to run section 4, which is where the logic was applied to classify the hired candidates in a new column called "Hired", also where the technologies were classified by categories for better analysis, and finally a new one table was created (candidatesHired) in the database to which the data was inserted with the new columns that were created for the analysis.
-- The last step is to run section 5. In this section the required graphs are generated with matplotlib. However, if you want to see my dashboard made in Power BI, you can find it at the end of the README.
+- We recommend you start with section #1: Import the modules, make the connection to the database, and load the data into it.
+    ##### Note: In this section, you must change the name of the JSON file to the name of the JSON file that you need to create to be able to make the connection to the database. In our case the name of my file was `keys.json`. If you decide to name your file the same way, remember to change the values specified in the `Database Configuration` field located in the README.
+- The second step is to execute section 2, which is where the exploratory analysis carried out on the 3 tables with which we initially worked is located.
+- The third step is to run section 3, which is where the merge, imputing & standardization
+- The fourth step is to run section 4, which was where we created the new table (our final table) in postgreSQL
+- The last step is to run the last section (Section 5) where the analysis is basically done, showing the results in the dashboards that we made in Power BI. However, if you want to see our dashboard made in Power BI, you can find it at the end of the README.
 8. Go to Power BI:
 
   
