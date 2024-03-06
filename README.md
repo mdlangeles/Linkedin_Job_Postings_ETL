@@ -18,6 +18,9 @@ In this project, we are going to analyze, manipulate and visualize data about jo
     
 - Jupyter Notebook
 
+## Repository Organization:
+Our repository has a folder called Data, which is where the datasets in xlsx format that we use for the development of the project are. It also has the notebook where all the code and functionalities of the project were created except for the visualizations that were created with Power BI. In the repository there is also the README of the project and the requirements.txt
+
 ## Dataset used
 For this project, we used 3 datasets, extracted from Kaggle, the first of which was: It contains 28 columns and 33246 rows that correspond to some works published on Linkedin.
 The columns names of “job_postings.csv” before data transformation are:
