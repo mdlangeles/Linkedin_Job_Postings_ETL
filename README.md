@@ -168,5 +168,5 @@ pip install requirements
 8.6 Congrats!, you can now select the table you want to work with, you can upload it to the dashboard and make your own dashboard
 
 ## Our Dashboard
-Here is our dashboard ;) [Our Dashboard](https://app.powerbi.com/view?r=eyJrIjoiNjM2ZTg5NGItMDUwZi00YmRlLTg4M2UtNDRmNjEyZDMwYTU1IiwidCI6IjY5M2NiZWEwLTRlZjktNDI1NC04OTc3LTc2ZTA1Y2I1ZjU1NiIsImMiOjR9)
+Here is our dashboard ;) [Our Dashboard]("C:\Users\USER\linkedin_job_postings_etl\linkedin_jobs_visualizations.pdf")
 
