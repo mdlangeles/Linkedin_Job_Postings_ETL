@@ -131,9 +131,9 @@ python -m venv env
 ```bash
 .\venv\Scripts\activate
 ```
-5. Install libraries:
+5. Install Requirements:
 ```bash
-pip install requirements
+pip install -r requirements.txt
 ```
 6. Create a database in PostgreSQL
 7. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 5 sections :
