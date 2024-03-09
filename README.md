@@ -141,8 +141,7 @@ pip install requirements
     ##### Note: In this section, you must change the name of the JSON file to the name of the JSON file that you need to create to be able to make the connection to the database. In our case the name of my file was `keys.json`. If you decide to name your file the same way, remember to change the values specified in the `Database Configuration` field located in the README.
 - The second step is to execute section 2, which is where the exploratory analysis carried out on the 3 tables with which we initially worked is located.
 - The third step is to run section 3, which is where the merge, imputing & standardization
-- The fourth step is to run section 4, which was where we created the new table (our final table) in postgreSQL
-- The last step is to run the last section (Section 5) where the analysis is basically done, showing the results in the dashboards that we made in Power BI. However, if you want to see our dashboard made in Power BI, you can find it at the end of the README.
+- The last step is to run section 4, which was where we created the new table (our final table) in postgreSQL
 8. Go to Power BI:
 
   
@@ -168,5 +167,5 @@ pip install requirements
 8.6 Congrats!, you can now select the table you want to work with, you can upload it to the dashboard and make your own dashboard
 
 ## Our Dashboard
-Here is our dashboard ;) [Our Dashboard]()
+Here is our dashboard ;) [Our Dashboard](linkedin_jobs_visualizations.pdf)
 
