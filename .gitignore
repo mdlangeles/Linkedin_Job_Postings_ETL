@@ -3,6 +3,5 @@ keys.json
 venv/
 Credentials/
 job_salary_data.csv
-job_salary.csv
-job_salary.xlsx
-jobs.xlsx
+job_salaries_combined.csv
+jobss.csv
