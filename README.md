@@ -1,4 +1,4 @@
-# Linkedin Job Postings - ETL
+# Linkedin Job Postings - ETL - Part # 1
 By: Emmanuel Quintero & María de los Ángeles Amú
 
 ## Overview
@@ -168,5 +168,24 @@ pip install requirements
 8.6 Congrats!, you can now select the table you want to work with, you can upload it to the dashboard and make your own dashboard
 
 ## Our Dashboard
-Here is our dashboard ;) [Our Dashboard](https://app.powerbi.com/view?r=eyJrIjoiNjM2ZTg5NGItMDUwZi00YmRlLTg4M2UtNDRmNjEyZDMwYTU1IiwidCI6IjY5M2NiZWEwLTRlZjktNDI1NC04OTc3LTc2ZTA1Y2I1ZjU1NiIsImMiOjR9)
+Here is our dashboard: [Our Dashboard](https://app.powerbi.com/view?r=eyJrIjoiNjM2ZTg5NGItMDUwZi00YmRlLTg4M2UtNDRmNjEyZDMwYTU1IiwidCI6IjY5M2NiZWEwLTRlZjktNDI1NC04OTc3LTc2ZTA1Y2I1ZjU1NiIsImMiOjR9)
+
+# Linkedin Job Postings - ETL - Part # 2
+
+## Overview
+To carry out the second part of our project, we make our dimensional model from our dataset resulting from the first part of the project. Subsequently, we look for an API to make queries to bring data about more job postings and to be able to further expand our original dataset taking into account its columns. For this second part, we used the same tools used for the development of the first part, only a new one was added, which was Rapid Api, which was where we found the API to bring more job postings.
+We also updated the structure of our project by organizing it by folders and added an additional Jupyter Notebook "API_eda" which was where the eda was done to the results of the API, the structural creation of the table in Postgres and finally the insertion of the data into the table
+
+## Dimensional Model
+
+To create our dimensional model we used Power BI and the process was as follows:
+
+1. Verify that you already have the table created (in Postgres) with the transformations
+##### Remember: The table with the transformations is the same one that you select to perform the visualizations in step 8.6 in the first part
+
+2. Repeat steps 8, 8.1, 8.2 and 8.3 of the first part, when you have connected to postgres you select the table that was mentioned in the previous step
+##### Note: In order to connect to your database you must take into account the json file that you created at the beginning of the project, since there you defined the username, password, port, server (where postgres will run) and the name of the database that are you going to use
+
+3. 
+
 
