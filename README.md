@@ -216,4 +216,4 @@ Subsequently, the table structure for postgres was created and the transformed d
 
 We connect to postgres like this in steps 8, 8.1, 8.2 and 8.3, we select the table with the name we gave it when creating it
 
-And now we can make the graphs. This is our API dashboard: [Our API Dashboard](Visualizations/API%20dashboard.pdf)
+And now we can make the graphs. This is our API dashboard: [Our API Dashboard](Visualizations/dimensional_model_visual.pdf)
