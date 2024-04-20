@@ -200,17 +200,16 @@ Leaving our dimensional model like this:
 
 ## API
 
-Para la parte de la API es necesario tener una cuenta google preferiblemente, tambien cabe resaltar que para poder usar una API toca suscribirse a ella y tener en cuenta el numero de peticiones/consultas que te permite hacer a esa API dessde el plan basico (eso significa el gratis), adicionalmeente son necesarias unas credenciales, que te otorga la aplicacion una vez te registras para poder realizar peticiones a API
+For the API part it is necessary to have a Google account preferably, it is also worth noting that in order to use an API you have to subscribe to it and take into account the number of requests/queries that it allows you to make to that API from the basic plan (that means free), additionally, some credentials are necessary, which the application gives you once you register to be able to make requests to the API
 
 
-En nuestro caso, nos tocó crear varias cuentas de google para poder realizar varias peticiones, despues tuvimos que guardar esos resultados en un csv para poder realizarle el analisis exploratorio y con base en ese analisis realizar las respectivas transformaciones desde un Jupyter Notebook. 
+In our case, we had to create several Google accounts to be able to make several requests, then we had to save those results in a csv to be able to perform the exploratory analysis and based on that analysis, perform the respective transformations from a Jupyter Notebook.
 
-Algunas transformaciones fueron:
+Some transformations were:
 
-- Eliminacion de datos duplicados
-- Estandarizacion de columas con datos abreviados como la localización o el tipo de trabajo 
+- Removal of duplicate data
+- Standardization of columns with abbreviated data such as location or type of work
 
-Posteriormente, se creó la estructura de la tabla para postgres y se insertaron los datos transformados a la tabla anteriormente mencionada.
+Subsequently, the table structure for postgres was created and the transformed data was inserted into the aforementioned table.
 
-Nos conectamos a postgres como esta en los pasos 8, 8.1, 8.2 y 8.3, seleccionamos la taabla con el nombre que le pusimos a la hora de crearla
-
+We connect to postgres like this in steps 8, 8.1, 8.2 and 8.3, we select the table with the name we gave it when creating it
