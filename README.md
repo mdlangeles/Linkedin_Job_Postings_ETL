@@ -186,6 +186,14 @@ To create our dimensional model we used Power BI and the process was as follows:
 2. Repeat steps 8, 8.1, 8.2 and 8.3 of the first part, when you have connected to postgres you select the table that was mentioned in the previous step
 ##### Note: In order to connect to your database you must take into account the json file that you created at the beginning of the project, since there you defined the username, password, port, server (where postgres will run) and the name of the database that are you going to use
 
-3. 
+3. When selecting the table and loading it, you will right click on it to duplicate it, in our case we made 4 different tables, since we took out our fact table, and 3 dimensions connected to it
 
+4. Having the 4 different tables, what we did was select the columns that each dimension was going to have, including the fact table
 
+Leaving our dimensional model like this:
+
+![alt text](image.png) 
+
+5  Finally, we only make our visualizations by selecting the columns or items of each dimension that we would use to make the graphs.
+
+##### Note: The relationships were made through Jobid between the fact table and the dimensions
