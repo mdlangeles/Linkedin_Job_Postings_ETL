@@ -196,4 +196,21 @@ Leaving our dimensional model like this:
 
 5  Finally, we only make our visualizations by selecting the columns or items of each dimension that we would use to make the graphs.
 
-##### Note: The relationships were made through Jobid between the fact table and the dimensions
+##### Note: The relationships were made through job_id between the fact table and the dimensions
+
+## API
+
+Para la parte de la API es necesario tener una cuenta google preferiblemente, tambien cabe resaltar que para poder usar una API toca suscribirse a ella y tener en cuenta el numero de peticiones/consultas que te permite hacer a esa API dessde el plan basico (eso significa el gratis), adicionalmeente son necesarias unas credenciales, que te otorga la aplicacion una vez te registras para poder realizar peticiones a API
+
+
+En nuestro caso, nos tocó crear varias cuentas de google para poder realizar varias peticiones, despues tuvimos que guardar esos resultados en un csv para poder realizarle el analisis exploratorio y con base en ese analisis realizar las respectivas transformaciones desde un Jupyter Notebook. 
+
+Algunas transformaciones fueron:
+
+- Eliminacion de datos duplicados
+- Estandarizacion de columas con datos abreviados como la localización o el tipo de trabajo 
+
+Posteriormente, se creó la estructura de la tabla para postgres y se insertaron los datos transformados a la tabla anteriormente mencionada.
+
+Nos conectamos a postgres como esta en los pasos 8, 8.1, 8.2 y 8.3, seleccionamos la taabla con el nombre que le pusimos a la hora de crearla
+
