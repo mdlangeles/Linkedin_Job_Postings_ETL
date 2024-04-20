@@ -209,7 +209,11 @@ Some transformations were:
 
 - Removal of duplicate data
 - Standardization of columns with abbreviated data such as location or type of work
+- Salary Outliers (imputing)
+- Delete the “remote_ratio” column
 
 Subsequently, the table structure for postgres was created and the transformed data was inserted into the aforementioned table.
 
 We connect to postgres like this in steps 8, 8.1, 8.2 and 8.3, we select the table with the name we gave it when creating it
+
+And now we can make the graphs. This is our API dashboard: [Our API Dashboard](Visualizations/API%20dashboard.pdf)
