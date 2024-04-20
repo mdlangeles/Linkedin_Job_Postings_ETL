@@ -192,7 +192,7 @@ To create our dimensional model we used Power BI and the process was as follows:
 
 Leaving our dimensional model like this:
 
-![alt text](image.png) 
+![alt text](Dimensional_Model/image.png) 
 
 5  Finally, we only make our visualizations by selecting the columns or items of each dimension that we would use to make the graphs.
 
