@@ -18,25 +18,96 @@ from dag_connections.db import engine_creation, finish_engine
 # from driveconf import upload_file
 
 
-
-# def read_linkedin_data():
+def read_linkedin():
+    query = "SELECT * FROM jobslinkedin"
     
-#     df_linkedin = pd.read_excel("./Data/job_postulations.xlsx")
-#     logging.info("Excel read successfully")
-#     logging.info(f"Columns are: %s" , df_linkedin.head())
-
-#     return df_linkedin.to_json(orient='records')
-
+    engine = engine_creation()
     
-# def transform(**kwargs):
-#     logging.info("The CSV has started transformation process")
+    df_linkedin = pd.read_sql(query, engine)
+
+    #Cerramos la conexion a la db
+    finish_engine(engine)
+
+    logging.info("database read succesfully")
+    logging.info('data extracted is %s', df_linkedin.head(5))
+    return df_linkedin.to_json(orient='records')
+
+def read_linkedin_jobs():
+    query = "SELECT * FROM jobsindustries"
+    
+    engine = engine_creation()
+    
+    df_industries = pd.read_sql(query, engine)
+
+    #Cerramos la conexion a la db
+    finish_engine(engine)
+
+    logging.info("database read succesfully")
+    logging.info('data extracted is %s', df_industries.head(5))
+    return df_industries.to_json(orient='records')
+
+def read_linkedin_industries():
+    query = "SELECT * FROM industries"
+    
+    engine = engine_creation()
+    
+    df_indus = pd.read_sql(query, engine)
+
+    #Cerramos la conexion a la db
+    finish_engine(engine)
+
+    logging.info("database read succesfully")
+    logging.info('data extracted is %s', df_indus.head(5))
+    return df_indus.to_json(orient='records')
+
+def merge_jobs(**kwargs):
+    ti = kwargs["ti"]
+
+    logging.info( f"Linkedin has started the merge proccess")
+    data_strg = ti.xcom_pull(task_ids="read_linkedin")
+    json_data = json.loads(data_strg)
+    df_linkedin = pd.json_normalize(data=json_data)
+
+    logging.info( f"JobsLink has started the merge proccess")
+    data_strg = ti.xcom_pull(task_ids="read_db_jobs")
+    json_data = json.loads(data_strg)
+    df_industries = pd.json_normalize(data=json_data)
+
+    logging.info( f"Industries has started the merge proccess")
+    data_strg = ti.xcom_pull(task_ids="read_db_industries")
+    json_data = json.loads(data_strg)
+    df_indus = pd.json_normalize(data=json_data)
+
+    df_merge= df_linkedin.merge(df_industries, on='job_id')\
+    .merge(df_indus, on='industry_id')
+
+    return df_merge.to_json(orient='records')
+
+def read_api():
+    query = "SELECT * FROM jobs_api"
+    
+    engine = engine_creation()
+    
+    df_api = pd.read_sql(query, engine)
+
+    #Cerramos la conexion a la db
+    finish_engine(engine)
+
+    logging.info("database read succesfully")
+    logging.info('data extracted is %s', df_api.head(5))
+    return df_api.to_json(orient='records')
+
+
+
+# def transform_linkedin(**kwargs):
+#     logging.info("The linkedin data has started transformation process")
 
 #     ti = kwargs['ti']
-#     data_strg = ti.xcom_pull(task_ids='read_csv_task')
+#     data_strg = ti.xcom_pull(task_ids='read_db_linkedin')
 #     json_data = json.loads(data_strg)
-#     df_spotify = pd.json_normalize(data=json_data)
+#     df_linkedin = pd.json_normalize(data=json_data)
 
-#     logging.info("df is type: %s", type(df_spotify))
+#     logging.info("df is type: %s", type(df_linkedin))
     
 #     #Column Unnamed Deleted
 #     df_spotify = delete_column(df_spotify)
@@ -60,36 +131,7 @@ from dag_connections.db import engine_creation, finish_engine
 #     return df_spotify.to_json(orient='records')
     
     
-def read_linkedin():
-    query = "SELECT * FROM LinkedinSalary"
-    
-    engine = engine_creation()
-    
-    df_linkedin = pd.read_sql(query, engine)
-
-    #Cerramos la conexion a la db
-    finish_engine(engine)
-
-    logging.info("database read succesfully")
-    logging.info('data extracted is %s', df_linkedin.head(5))
-    return df_linkedin.to_json(orient='records')
-
-
-
-# def merge(**kwargs):
-#     ti = kwargs["ti"]
-
-#     logging.info( f"Spotify has started the merge proccess")
-#     data_strg = ti.xcom_pull(task_ids="transform_csv_task")
-#     json_data = json.loads(data_strg)
-#     df_spotify = pd.json_normalize(data=json_data)
-
-#     logging.info( f"Grammys has started the merge proccess")
-#     data_strg = ti.xcom_pull(task_ids="transform_db_task")
-#     json_data = json.loads(data_strg)
-#     grammys_df = pd.json_normalize(data=json_data)
-
-#     df_merge = df_spotify.merge(grammys_df, how='left', left_on='track_name', right_on='nominee')
+    #df_merge = df_spotify.merge(grammys_df, how='left', left_on='track_name', right_on='nominee')
 #     df_merge = fill_na_merge(df_merge)
 #     df_merge= fill_na_merge1(df_merge)
 #     df_merge=delete_artist(df_merge)

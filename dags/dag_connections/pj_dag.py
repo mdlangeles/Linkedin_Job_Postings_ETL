@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.abspath("/home/emmanuel/Escritorio/linkedin_job_postings_etl/dags"))
 
-from dag_connections.etl import read_linkedin
+from dag_connections.etl import read_linkedin, read_api, read_linkedin_jobs, read_linkedin_industries, merge_jobs
 
 
 
@@ -29,22 +29,38 @@ with DAG(
     schedule_interval='@daily',  # Set the schedule interval as per your requirements
 ) as dag:
     
-    read_linkedin_task = PythonOperator(
+    read_db_linkedin = PythonOperator(
         task_id='read_db_linkedin',
         python_callable=read_linkedin,
+
     )
 
-#     read_api_task = PythonOperator(
-#         task_id='read_api_task',
-#         python_callable=extract_sql,
-#         provide_context = True,
-#         )
+    read_db_jobs = PythonOperator(
+        task_id='read_db_jobs',
+        python_callable=read_linkedin_jobs,
+    )
 
-#     transform_linkedin_task = PythonOperator(
-#         task_id='transform_linkedin_task',
-#         python_callable=transform,
-#         provide_context = True,
-# )
+    read_db_industries = PythonOperator(
+        task_id='read_db_industries',
+        python_callable=read_linkedin_industries,
+    )
+
+    jobs_merge = PythonOperator(
+        task_id='jobs_merge',
+        python_callable= merge_jobs,
+    )
+
+    read_db_api = PythonOperator(
+        task_id='read_db_api',
+        python_callable=read_api,
+    )
+
+    # transform_db_linkedin = PythonOperator(
+    #     task_id='transform_db_linkedin',
+    #     python_callable=transform_linkedin,
+    # )
+
+    
 
 #     transform_api_task = PythonOperator(
 #         task_id='transform_db_task',
@@ -70,4 +86,8 @@ with DAG(
     #     provide_context = True,
     #     )
 
-    read_linkedin_task
+    read_db_api
+    read_db_linkedin >> jobs_merge
+    read_db_jobs >> jobs_merge
+    read_db_industries >> jobs_merge
+    
