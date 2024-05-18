@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.abspath("/home/emmanuel/Escritorio/linkedin_job_postings_etl/dags"))
 
-from dag_connections.etl import read_linkedin, read_api, read_linkedin_jobs,read_linkedin_industries, merge_jobs
+from dag_connections.etl import read_linkedin, read_api, read_linkedin_jobs,read_linkedin_industries, merge_jobs, transform_linkedin
 
 
 
@@ -55,18 +55,18 @@ with DAG(
         python_callable=read_api,
     )
 
-    # transform_db_linkedin = PythonOperator(
-    #     task_id='transform_db_linkedin',
-    #     python_callable=transform_linkedin,
-    # )
+    transform_db_linkedin = PythonOperator(
+        task_id='transform_db_linkedin',
+        python_callable=transform_linkedin,
+    )
 
     
 
-#     transform_api_task = PythonOperator(
-#         task_id='transform_db_task',
-#         python_callable=transform_sql,
-#         provide_context = True,
-#         )
+    # transform_api_task = PythonOperator(
+    #     task_id='transform_db_task',
+    #     python_callable=transform_sql,
+    #     provide_context = True,
+    #     )
     
     # merge_task = PythonOperator(
     #     task_id='merge_task',
@@ -90,4 +90,6 @@ with DAG(
     read_db_linkedin >> jobs_merge #>> transform_db_linkedin
     read_db_jobs >> jobs_merge #>> transform_db_linkedin
     read_db_industries >> jobs_merge #>> transform_db_linkedin
+
+    jobs_merge >> transform_db_linkedin
     

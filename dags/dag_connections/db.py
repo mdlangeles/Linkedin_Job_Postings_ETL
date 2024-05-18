@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-with open('Credentials/keys.json', 'r') as json_file:
+with open('Credentials/keys_e.json', 'r') as json_file:
     data = json.load(json_file)
     user = data["user"]
     password = data["password"]
