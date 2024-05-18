@@ -33,7 +33,7 @@ def average_salary(df_linkedin):
 
     return df_linkedin
 
-def delete_columns(df_linkedin):
+def delete_columns1(df_linkedin):
     df_linkedin.drop(columns=['max_salary', 'med_salary', 'min_salary', 'avg_salary'], inplace=True)
 
     return df_linkedin
@@ -54,7 +54,7 @@ def annual(df_linkedin):
     df_linkedin['annual_salary'] = df_linkedin.apply(c_annual_salary, axis=1)
     return df_linkedin
 
-def delete_columns(df_linkedin):
+def delete_columns2(df_linkedin):
     df_linkedin.drop(columns=['pay_period', 'Salary'], inplace=True)
 
     return df_linkedin

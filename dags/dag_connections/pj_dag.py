@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.abspath("/home/emmanuel/Escritorio/linkedin_job_postings_etl/dags"))
 
-from dag_connections.etl import read_linkedin, read_api, read_linkedin_jobs, read_linkedin_industries, merge_jobs
+from dag_connections.etl import read_linkedin, read_api, read_linkedin_jobs,read_linkedin_industries, merge_jobs
 
 
 
@@ -87,7 +87,7 @@ with DAG(
     #     )
 
     read_db_api
-    read_db_linkedin >> jobs_merge
-    read_db_jobs >> jobs_merge
-    read_db_industries >> jobs_merge
+    read_db_linkedin >> jobs_merge #>> transform_db_linkedin
+    read_db_jobs >> jobs_merge #>> transform_db_linkedin
+    read_db_industries >> jobs_merge #>> transform_db_linkedin
     

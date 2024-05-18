@@ -15,6 +15,7 @@ sys.path.append(os.path.abspath("/opt/airflow/dags/dag_connections/"))
 # from transformations.transformations import delete_column, delete_duplicated_id, duration_transformation, cat_genre, drop_transformation, fill_na_merge, fill_na_merge1, category_na, nominee, delete_artist, title
 # from transformations.transformations import drop_columns, parenthesis_transformation, fill_nulls_first, fill_nulls_arts, fill_nulls_worker, drop_nulls, lower_case, rename_column
 from dag_connections.db import engine_creation, finish_engine
+#from transformations.transformations import select_columns, salary_standardization, average_salary, delete_columns1, annual, delete_columns2, last_changes
 # from driveconf import upload_file
 
 
@@ -100,35 +101,40 @@ def read_api():
 
 
 # def transform_linkedin(**kwargs):
+#     from transformations.transformations import select_columns
 #     logging.info("The linkedin data has started transformation process")
 
 #     ti = kwargs['ti']
-#     data_strg = ti.xcom_pull(task_ids='read_db_linkedin')
+#     data_strg = ti.xcom_pull(task_ids='jobs_merge')
 #     json_data = json.loads(data_strg)
 #     df_linkedin = pd.json_normalize(data=json_data)
 
 #     logging.info("df is type: %s", type(df_linkedin))
     
-#     #Column Unnamed Deleted
-#     df_spotify = delete_column(df_spotify)
-#     logging.info("Colunmn deleted %s", df_spotify.head(5)) 
+#     df_linkedin = select_columns(df_linkedin)
+#     logging.info("Columns selected %s", df_linkedin.head(5)) 
 
-#     #Delete duplicated track_id
-#     df_spotify=  delete_duplicated_id(df_spotify)
-#     logging.info("Duplicated deleted %s", df_spotify.head(5)) 
+#     df_linkedin=  salary_standardization(df_linkedin)
+#     logging.info("salary standardization done %s", df_linkedin.head(5)) 
 
-#     df_spotify= duration_transformation(df_spotify)
-#     logging.info("Duration transformation done %s", df_spotify.head(5))
+#     df_linkedin= average_salary(df_linkedin)
+#     logging.info("average salary done %s", df_linkedin.head(5))
 
-#     df_spotify= cat_genre(df_spotify)
-#     logging.info("The Genre was categorized %s", df_spotify.head(5))
+#     df_linkedin= delete_columns1(df_linkedin)
+#     logging.info("COlumns deleted1 %s", df_linkedin.head(5))
 
-#     df_spotify=drop_transformation(df_spotify)
-#     logging.info("The columns was deleted perfectly %s", df_spotify.head(5))
+#     df_linkedin=annual(df_linkedin)
+#     logging.info("annual configuration done %s", df_linkedin.head(5))
 
-#     logging.info("The CSV has ended transformation process")
+#     df_linkedin= delete_columns2(df_linkedin)
+#     logging.info("columns deleted2 %s", df_linkedin.head(5))
 
-#     return df_spotify.to_json(orient='records')
+#     df_linkedin= last_changes(df_linkedin)
+#     logging.info("imputation done %s", df_linkedin.head(5))
+
+#     logging.info("The data has ended transformation process")
+
+#     return df_linkedin.to_json(orient='records')
     
     
     #df_merge = df_spotify.merge(grammys_df, how='left', left_on='track_name', right_on='nominee')
