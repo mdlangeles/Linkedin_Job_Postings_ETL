@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath("/opt/airflow/dags/dag_connections/"))
 # from transformations.transformations import delete_column, delete_duplicated_id, duration_transformation, cat_genre, drop_transformation, fill_na_merge, fill_na_merge1, category_na, nominee, delete_artist, title
 # from transformations.transformations import drop_columns, parenthesis_transformation, fill_nulls_first, fill_nulls_arts, fill_nulls_worker, drop_nulls, lower_case, rename_column
 from dag_connections.db import engine_creation, finish_engine
-from transformations.transformations import select_columns, salary_standardization, average_salary, delete_columns1, annual, delete_columns2, last_changes
+from transformations.transformations import *
 # from driveconf import upload_file
 
 
@@ -87,22 +87,6 @@ def merge_jobs(**kwargs):
 
     return df_merge.to_json(orient='records')
 
-def read_api():
-    query = "SELECT * FROM jobs_api"
-    
-    engine = engine_creation()
-    
-    df_api = pd.read_sql(query, engine)
-
-    #Cerramos la conexion a la db
-    finish_engine(engine)
-
-    logging.info("database read succesfully")
-    logging.info('data extracted is %s', df_api.head(5))
-    return df_api.to_json(orient='records')
-
-
-
 def transform_linkedin(**kwargs):
     logging.info("The linkedin data has started transformation process")
 
@@ -139,22 +123,74 @@ def transform_linkedin(**kwargs):
     logging.info("The data has ended transformation process")
 
     return df_linkedin.to_json(orient='records')
+
+
+
+def read_api():
+    query = "SELECT * FROM jobs_api"
+    
+    engine = engine_creation()
+    
+    df_api = pd.read_sql(query, engine)
+
+    #Cerramos la conexion a la db
+    finish_engine(engine)
+
+    logging.info("database read succesfully")
+    logging.info('data extracted is %s', df_api.head(5))
+    return df_api.to_json(orient='records')
+
+def transform_api(**kwargs):
+    logging.info("The API data has started transformation process")
+
+    ti = kwargs['ti']
+    data_strg = ti.xcom_pull(task_ids='read_db_api')
+    json_data = json.loads(data_strg)
+    df_api = pd.json_normalize(data=json_data)
+
+    logging.info("df is type: %s", type(df_api))
+
+    df_api= drop_duplicates(df_api)
+
+    df_api= replacing_values(df_api)
+
+    df_api= mapping_company_location(df_api)
+
+    df_api= mapping_employee_residence(df_api)
+
+    df_api= outliers(df_api)
+
+    df_api= remove_columns(df_api)
+
+    logging.info("The data has ended transformation process %s", df_api.head(5))
+
+    logging.info("The data has ended transformation process")
+
+    return df_api.to_json(orient='records')
+
+
+
+
+
+
+
+
     
     
-    df_merge = df_spotify.merge(grammys_df, how='left', left_on='track_name', right_on='nominee')
-    df_merge = fill_na_merge(df_merge)
-    df_merge= fill_na_merge1(df_merge)
-    df_merge=delete_artist(df_merge)
-    df_merge=category_na(df_merge)
-    df_merge=nominee(df_merge)
-    df_merge=title(df_merge)
-    logging.info( f"THe merge is Done")
-    logging.info(f"The dimension is: {df_merge.shape}")
-    logging.info(f"the columns are: {df_merge.columns}")
+    # df_merge = df_spotify.merge(grammys_df, how='left', left_on='track_name', right_on='nominee')
+    # df_merge = fill_na_merge(df_merge)
+    # df_merge= fill_na_merge1(df_merge)
+    # df_merge=delete_artist(df_merge)
+    # df_merge=category_na(df_merge)
+    # df_merge=nominee(df_merge)
+    # df_merge=title(df_merge)
+    # logging.info( f"THe merge is Done")
+    # logging.info(f"The dimension is: {df_merge.shape}")
+    # logging.info(f"the columns are: {df_merge.columns}")
 
 
 
-    return df_merge.to_json(orient='records')
+    # return df_merge.to_json(orient='records')
 
 
 # def load(**kwargs):

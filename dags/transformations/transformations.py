@@ -74,5 +74,87 @@ def last_changes(df_linkedin):
 
     return df_linkedin
 
+# API DATA
+
+def drop_duplicates(df_api):
+    df_api.drop_duplicates()
+
+    return df_api
+
+def replacing_values(df_api):
+    df_api['experience_level'] = df_api['experience_level'].replace({
+        'EN': 'Entry Level',
+        'EX': 'Experienced',
+        'MI': 'Mid-Level',
+        'SE': 'Senior'
+    })
+
+    df_api['employment_type'] = df_api['employment_type'].replace({
+        'FT': 'Full time',
+        'PT': 'Part time',
+        'CT': 'Contractor',
+        'FL': 'Freelancer'
+    })
+
+    df_api['company_size'] = df_api['company_size'].replace({
+        'L' : 'Large',
+        'M' : 'Medium',
+        'S' : 'Small'
+    })
+
+    return df_api
+
+def mapping_employee_residence(df_api):
+    df_api['employee_residence'] = df_api['employee_residence'].map({
+        'ES': 'Spain', 'US': 'United States', 
+        'CA': 'Canada', 'DE': 'Germany', 
+        'GB': 'United Kingdom', 'NG': 'Nigeria', 'IN': 'India', 'HK': 'Hong Kong', 'PT': 'Portugal', 'NL': 'Netherlands', 
+        'CH': 'Switzerland', 'CF': 'Central African Republic', 'FR': 'France', 'AU': 'Australia', 'FI': 'Finland', 
+        'UA': 'Ukraine', 'IE': 'Ireland', 'IL': 'Israel', 'GH': 'Ghana', 'AT': 'Austria', 'CO': 'Colombia', 
+        'SG': 'Singapore', 'SE': 'Sweden', 'SI': 'Slovenia', 'MX': 'Mexico', 'UZ': 'Uzbekistan', 'BR': 'Brazil', 
+        'TH': 'Thailand', 'HR': 'Croatia', 'PL': 'Poland', 'KW': 'Kuwait', 'VN': 'Vietnam', 'CY': 'Cyprus', 
+        'AR': 'Argentina', 'AM': 'Armenia', 'BA': 'Bosnia and Herzegovina', 'KE': 'Kenya', 'GR': 'Greece', 
+        'MK': 'North Macedonia', 'LV': 'Latvia', 'RO': 'Romania', 'PK': 'Pakistan', 'IT': 'Italy', 'MA': 'Morocco', 
+        'LT': 'Lithuania', 'BE': 'Belgium', 'AS': 'American Samoa', 'IR': 'Iran', 'HU': 'Hungary', 'SK': 'Slovakia', 
+        'CN': 'China', 'CZ': 'Czech Republic', 'CR': 'Costa Rica', 'TR': 'Turkey', 'CL': 'Chile', 'PR': 'Puerto Rico', 
+        'DK': 'Denmark', 'BO': 'Bolivia', 'PH': 'Philippines', 'DO': 'Dominican Republic', 'EG': 'Egypt', 'ID': 'Indonesia', 
+        'AE': 'United Arab Emirates', 'MY': 'Malaysia', 'JP': 'Japan', 'EE': 'Estonia', 'HN': 'Honduras', 'TN': 'Tunisia', 
+        'RU': 'Russia', 'DZ': 'Algeria', 'IQ': 'Iraq', 'BG': 'Bulgaria', 'JE': 'Jersey', 'RS': 'Serbia', 'NZ': 'New Zealand', 
+        'MD': 'Moldova', 'LU': 'Luxembourg', 'MT': 'Malta'})
+    
+    return df_api
+
+def mapping_company_location(df_api):
+    df_api['company_location'] = df_api['company_location'].map({
+        'ES': 'Spain', 'US': 'United States', 'CA': 'Canada', 'DE': 'Germany', 'GB': 'United Kingdom', 'NG': 'Nigeria', 
+        'IN': 'India', 'HK': 'Hong Kong', 'NL': 'Netherlands', 'CH': 'Switzerland', 'CF': 'Central African Republic', 
+        'FR': 'France', 'FI': 'Finland', 'UA': 'Ukraine', 'IE': 'Ireland', 'IL': 'Israel', 'GH': 'Ghana', 'CO': 'Colombia', 
+        'SG': 'Singapore', 'AU': 'Australia', 'SE': 'Sweden', 'SI': 'Slovenia', 'MX': 'Mexico', 'BR': 'Brazil', 
+        'PT': 'Portugal', 'RU': 'Russia', 'TH': 'Thailand', 'HR': 'Croatia', 'VN': 'Vietnam', 'EE': 'Estonia', 
+        'AM': 'Armenia', 'BA': 'Bosnia and Herzegovina', 'KE': 'Kenya', 'GR': 'Greece', 'MK': 'North Macedonia', 
+        'LV': 'Latvia', 'RO': 'Romania', 'PK': 'Pakistan', 'IT': 'Italy', 'MA': 'Morocco', 'PL': 'Poland', 'AL': 'Albania',
+        'AR': 'Argentina', 'LT': 'Lithuania', 'AS': 'American Samoa', 'CR': 'Costa Rica', 'IR': 'Iran', 
+        'BS': 'Bahamas', 'HU': 'Hungary', 'AT': 'Austria', 'SK': 'Slovakia', 'CZ': 'Czech Republic', 'TR': 'Turkey', 
+        'PR': 'Puerto Rico', 'DK': 'Denmark', 'BO': 'Bolivia', 'PH': 'Philippines', 'BE': 'Belgium', 'ID': 'Indonesia', 
+        'EG': 'Egypt', 'AE': 'United Arab Emirates', 'LU': 'Luxembourg', 'MY': 'Malaysia', 'HN': 'Honduras', 'JP': 'Japan', 
+        'DZ': 'Algeria', 'IQ': 'Iraq', 'CN': 'China', 'NZ': 'New Zealand', 'CL': 'Chile', 'MD': 'Moldova', 'MT': 'Malta'})
+
+    return df_api
 
 
+def outliers(df_api):
+    Q1 = df_api['salary'].quantile(0.25)
+    Q3 = df_api['salary'].quantile(0.75)
+    IQR = Q3 - Q1
+
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+
+    df_api = df_api[(df_api['salary'] >= lower_bound) & (df_api['salary'] <= upper_bound)]
+
+    return df_api
+
+def remove_columns(df_api):
+    df_api.drop(columns=['remote_ratio'], inplace=True)
+
+    return df_api
