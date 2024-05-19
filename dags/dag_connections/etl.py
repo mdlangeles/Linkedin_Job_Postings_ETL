@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath("/opt/airflow/dags/dag_connections/"))
 # sys.path.append(os.path.abspath("/opt/airflow/dags/dag_connections/"))
 # from transformations.transformations import delete_column, delete_duplicated_id, duration_transformation, cat_genre, drop_transformation, fill_na_merge, fill_na_merge1, category_na, nominee, delete_artist, title
 # from transformations.transformations import drop_columns, parenthesis_transformation, fill_nulls_first, fill_nulls_arts, fill_nulls_worker, drop_nulls, lower_case, rename_column
-from dag_connections.db import engine_creation, finish_engine
+from dag_connections.db import engine_creation, finish_engine, create_data_warehouse, insert_data_warehouse
 from transformations.transformations import *
 # from driveconf import upload_file
 
@@ -124,6 +124,110 @@ def transform_linkedin(**kwargs):
 
     return df_linkedin.to_json(orient='records')
 
+def create_company_dimension(df_linkedin):
+    company_dimension = df_linkedin.drop(columns=[
+        'title',
+        'description',
+        'formatted_work_type',
+        'location',
+        'views',
+        'job_posting_url',
+        'application_type',
+        'formatted_experience_level',
+        'posting_domain',
+        'sponsored',
+        'currency',
+        'compensation_type',
+        'scraped',
+        'annual_salary'   
+    ])
+
+    return company_dimension
+
+def create_industry_dimension(df_linkedin):
+    industry_dimension = df_linkedin.drop(columns=[
+        'title',
+        'description',
+        'formatted_work_type',
+        'location',
+        'views',
+        'job_posting_url',
+        'application_type',
+        'formatted_experience_level',
+        'posting_domain',
+        'sponsored',
+        'currency',
+        'compensation_type',
+        'scraped',
+        'annual_salary',
+        'company_id'  
+    ])
+
+    return industry_dimension
+
+def create_jobs_dimension(df_linkedin):
+    jobs_dimension = df_linkedin.drop(columns=[
+        'views',
+        'posting_domain',
+        'currency',
+        'compensation_type',
+        'industry_id',
+        'industry_name',
+        'scraped',
+        'annual_salary',
+        'company_id'  
+    ])
+
+    return jobs_dimension
+
+
+def create_salary_facts(df_linkedin):
+    fact_salary = df_linkedin.drop(columns=[
+        'company_id',
+        'title',
+        'description',
+        'formatted_work_type',
+        'location',
+        'views',
+        'job_posting_url',
+        'application_type',
+        'formatted_experience_level',
+        'posting_domain',
+        'sponsored',
+        'scraped',
+        'industry_id',
+        'industry_name',
+
+    ])
+
+    return fact_salary
+
+def load_linkedin(**kwargs):
+    logging.info("Starting data loading process...")
+    ti = kwargs["ti"]
+    
+    create_data_warehouse()
+    
+    fact_salary = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin")))
+    logging.info('Number of rows loaded into fact_salary: %s', len(fact_salary))
+    insert_data_warehouse(fact_salary,'fact_salary')
+
+    company_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='date_dimension')))
+    logging.info('Number of rows loaded into dim_company: %s', len(company_dimension))
+    insert_data_warehouse(company_dimension,'dim_company')
+
+    industry_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='model_dimension')))
+    logging.info('Number of rows loaded into dim_industry: %s', len(industry_dimension))
+    insert_data_warehouse(industry_dimension,'dim_industry')
+
+    jobs_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='location_dimension')))
+    logging.info('Number of rows loaded into jobs_dimension: %s', len(jobs_dimension))
+    insert_data_warehouse(jobs_dimension,'dim_jobs')
+
+
+    logging.info("Data loaded into data warehouse")
+
+
 
 
 def read_api():
@@ -170,7 +274,22 @@ def transform_api(**kwargs):
 
 
 
+def load_api(**kwargs):
+    logging.info("Load proccess is started")
+    ti = kwargs["ti"]
+    data_strg = ti.xcom_pull(task_ids="transform_db_api")
+    json_data = json.loads(data_strg)
+    df_load_api = pd.json_normalize(data=json_data)
+    engine = engine_creation()
 
+    df_load_api.to_sql('API_transform', engine, if_exists='replace', index=False)
+
+    #Close the connection to the DB
+    finish_engine(engine)
+    df_load_api.to_csv("API_transform.csv", index=False)
+    logging.info( f"API_transform is ready")
+
+    return df_load_api.to_json(orient='records')
 
 
 

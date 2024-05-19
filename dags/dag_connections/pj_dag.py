@@ -58,15 +58,24 @@ with DAG(
     transform_db_linkedin = PythonOperator(
         task_id='transform_db_linkedin',
         python_callable=transform_linkedin,
-    )
-
-    
-
+    ) 
     transform_api_task = PythonOperator(
         task_id='transform_api_task',
         python_callable=transform_api,
         provide_context = True,
     )
+
+    load_linkedin_task = PythonOperator(
+        task_id='load_linkedin_task',
+        python_callable=load_linkedin,
+        provide_context = True,
+        )
+    
+    load_api_task = PythonOperator(
+        task_id='load_api_task',
+        python_callable=load_api,
+        provide_context = True,
+        )
     
     # merge_task = PythonOperator(
     #     task_id='merge_task',
@@ -87,10 +96,10 @@ with DAG(
     #     )
 
     
-    read_db_linkedin >> jobs_merge #>> transform_db_linkedin
-    read_db_jobs >> jobs_merge #>> transform_db_linkedin
-    read_db_industries >> jobs_merge #>> transform_db_linkedin
+    read_db_linkedin >> jobs_merge 
+    read_db_jobs >> jobs_merge
+    read_db_industries >> jobs_merge 
 
-    jobs_merge >> transform_db_linkedin
+    jobs_merge >> transform_db_linkedin >> load_linkedin_task
     
-    read_db_api >> transform_api_task
+    read_db_api >> transform_api_task >> load_api_task
