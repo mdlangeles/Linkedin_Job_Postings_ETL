@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 api_csv = './Data/jobs1.csv'
 
 
-with open('Credentials/keys.json', 'r') as json_file:
+with open('Credentials/keys_e.json', 'r') as json_file:
     data = json.load(json_file)
     user = data["user"]
     password = data["password"]
@@ -35,6 +35,9 @@ def create_session(engine):
     session = Session()
     return session
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 def create_data_warehouse():
     create_company_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_company(
@@ -53,20 +56,6 @@ def create_data_warehouse():
     );
     '''
 
-    create_jobs_dimension = '''
-    CREATE TABLE IF NOT EXISTS dim_jobs(
-        job_id INT PRIMARY KEY,
-        application_type VARCHAR(255),
-        description VARCHAR(255),
-        formatted_experience_level VARCHAR(255),
-        formatted_work_type VARCHAR(255),
-        job_posting_url VARCHAR(255),
-        location VARCHAR(255),
-        sponsored BOOLEAN,
-        title VARCHAR(255)
-    );
-    '''
-
     create_salary_facts = '''
     CREATE TABLE IF NOT EXISTS fact_salary(
         job_id INT PRIMARY KEY,
@@ -76,44 +65,52 @@ def create_data_warehouse():
     );
     '''
 
-    cnx = None
-    try:
-        cnx = create_engine()
-        cur = cnx.cursor()
-        cur.execute(create_salary_facts)
-        cur.execute(create_jobs_dimension)
-        cur.execute(create_industry_dimension)
-        cur.execute(create_company_dimension)
-        cur.close()
-        cnx.commit()
-        print('Data Warehouse created successfully')
-    except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
-    finally:
-        if cnx is not None:
-            cnx.close()
+    create_jobs_dimension = '''
+    CREATE TABLE IF NOT EXISTS dim_jobs(
+        job_id INT PRIMARY KEY,
+        job_posting_url VARCHAR(255),
+        location VARCHAR(255),
+        sponsored BOOLEAN,
+        title VARCHAR(255)
+    );
+    '''
 
-def insert_data_warehouse(df,table):
+
+    engine = create_engine(db_connection)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        session.execute(create_salary_facts)
+        session.execute(create_jobs_dimension)
+        session.execute(create_company_dimension)
+        session.execute(create_industry_dimension)
+        session.commit()
+    except Exception as e:
+        print(e)
+        session.rollback()
+    finally:
+        session.close()
+
+def insert_data_warehouse(df, table):
+    df = df.astype(str)
     column_names = df.columns.tolist()
     insert_query = f"""
         INSERT INTO {table}({", ".join(column_names)})
-        VALUES ({", ".join(["%s"] * len(column_names))})
+        VALUES ({", ".join([f":{col}" for col in column_names])})
     """
-    cnx = None
+    engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
+    Session = sessionmaker(bind=engine)
+    session = Session()
     try:
-        cnx = create_engine()
-        cur = cnx.cursor()
         for index, row in df.iterrows():
-            values = tuple(row)
-            cur.execute(insert_query, values)
-        cur.close()
-        cnx.commit()
+            values = {col: val for col, val in zip(column_names, row)}
+            session.execute(insert_query, values)
+        session.commit()
         print(f"Data has been loaded into: {table}")
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
-        if cnx is not None:
-            cnx.close()
+        session.close()
     
 
 

@@ -202,30 +202,60 @@ def create_salary_facts(df_linkedin):
 
     return fact_salary
 
+
 def load_linkedin(**kwargs):
     logging.info("Starting data loading process...")
+
     ti = kwargs["ti"]
-    
+    data_strg = ti.xcom_pull(task_ids='transform_db_linkedin')
+    json_data = json.loads(data_strg)
+    df_linkedin = pd.json_normalize(data=json_data)
+
     create_data_warehouse()
     
-    fact_salary = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin")))
+    fact_salary = create_salary_facts(df_linkedin)
     logging.info('Number of rows loaded into fact_salary: %s', len(fact_salary))
     insert_data_warehouse(fact_salary,'fact_salary')
 
-    company_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='date_dimension')))
+    company_dimension = create_company_dimension(df_linkedin)
     logging.info('Number of rows loaded into dim_company: %s', len(company_dimension))
     insert_data_warehouse(company_dimension,'dim_company')
 
-    industry_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='model_dimension')))
+    industry_dimension = create_industry_dimension(df_linkedin)
     logging.info('Number of rows loaded into dim_industry: %s', len(industry_dimension))
     insert_data_warehouse(industry_dimension,'dim_industry')
 
-    jobs_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='location_dimension')))
+    jobs_dimension = create_jobs_dimension(df_linkedin)
     logging.info('Number of rows loaded into jobs_dimension: %s', len(jobs_dimension))
     insert_data_warehouse(jobs_dimension,'dim_jobs')
 
 
     logging.info("Data loaded into data warehouse")
+
+# def load_linkedin(**kwargs):
+#     logging.info("Starting data loading process...")
+#     ti = kwargs["ti"]
+    
+#     create_data_warehouse()
+    
+#     fact_salary = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin")))
+#     logging.info('Number of rows loaded into fact_salary: %s', len(fact_salary))
+#     insert_data_warehouse(fact_salary,'fact_salary')
+
+#     company_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='dim_company')))
+#     logging.info('Number of rows loaded into dim_company: %s', len(company_dimension))
+#     insert_data_warehouse(company_dimension,'dim_company')
+
+#     industry_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='dim_industry')))
+#     logging.info('Number of rows loaded into dim_industry: %s', len(industry_dimension))
+#     insert_data_warehouse(industry_dimension,'dim_industry')
+
+#     jobs_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='dim_jobs')))
+#     logging.info('Number of rows loaded into jobs_dimension: %s', len(jobs_dimension))
+#     insert_data_warehouse(jobs_dimension,'dim_jobs')
+
+
+#     logging.info("Data loaded into data warehouse")
 
 
 
@@ -277,7 +307,7 @@ def transform_api(**kwargs):
 def load_api(**kwargs):
     logging.info("Load proccess is started")
     ti = kwargs["ti"]
-    data_strg = ti.xcom_pull(task_ids="transform_db_api")
+    data_strg = ti.xcom_pull(task_ids="transform_api_task")
     json_data = json.loads(data_strg)
     df_load_api = pd.json_normalize(data=json_data)
     engine = engine_creation()
