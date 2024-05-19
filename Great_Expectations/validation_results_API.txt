@@ -1,0 +1,50 @@
+Expectation 1: expect_column_values_to_not_be_null
+Column: work_year
+Success: True
+----------------------------------------
+Expectation 2: expect_column_values_to_not_be_null
+Column: salary_in_usd
+Success: True
+----------------------------------------
+Expectation 3: expect_column_values_to_be_greater_than
+Column: salary_in_usd
+Value: 0
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 4: expect_column_values_to_not_be_null
+Column: remote_ratio
+Success: True
+----------------------------------------
+Expectation 5: expect_column_values_to_be_greater_than
+Column: salary
+Value: 0
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 6: expect_column_values_to_not_be_null
+Column: experience_level
+Success: True
+----------------------------------------
+Expectation 7: expect_column_values_to_not_be_null
+Column: employment_type
+Success: True
+----------------------------------------
+Expectation 8: expect_column_values_to_not_be_null
+Column: job_title
+Success: True
+----------------------------------------
+Expectation 9: expect_column_values_to_not_be_null
+Column: employee_residence
+Success: True
+----------------------------------------
+Expectation 10: expect_column_values_to_not_be_null
+Column: company_location
+Success: True
+----------------------------------------
+Expectation 11: expect_column_values_to_not_be_null
+Column: company_size
+Success: True
+----------------------------------------

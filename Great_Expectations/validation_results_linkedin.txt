@@ -1,0 +1,183 @@
+Expectation 1: expect_column_values_to_not_be_null
+Column: max_salary
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 22135,
+  "unexpected_percent": 66.57943812789509,
+  "unexpected_percent_total": 66.57943812789509,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 2: expect_column_values_to_be_greater_than
+Column: max_salary
+Value: 0
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 3: expect_column_values_to_not_be_null
+Column: med_salary
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 31005,
+  "unexpected_percent": 93.25933946940985,
+  "unexpected_percent_total": 93.25933946940985,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 4: expect_column_values_to_be_greater_than
+Column: med_salary
+Value: 0
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 5: expect_column_values_to_not_be_null
+Column: min_salary
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 22135,
+  "unexpected_percent": 66.57943812789509,
+  "unexpected_percent_total": 66.57943812789509,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 6: expect_column_values_to_be_greater_than
+Column: min_salary
+Value: 0
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 7: expect_column_values_to_not_be_null
+Column: applies
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 17008,
+  "unexpected_percent": 51.15803404920892,
+  "unexpected_percent_total": 51.15803404920892,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 8: expect_column_values_to_not_be_null
+Column: views
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 7360,
+  "unexpected_percent": 22.138001564097937,
+  "unexpected_percent_total": 22.138001564097937,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 9: expect_column_values_to_not_be_null
+Column: title
+Success: True
+----------------------------------------
+Expectation 10: expect_column_values_to_not_be_null
+Column: description
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 1,
+  "unexpected_percent": 0.0030078806472959153,
+  "unexpected_percent_total": 0.0030078806472959153,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 11: expect_column_values_to_not_be_null
+Column: location
+Success: True
+----------------------------------------
+Expectation 12: expect_column_values_to_not_be_null
+Column: skills_desc
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "unexpected_count": 32909,
+  "unexpected_percent": 98.98634422186127,
+  "unexpected_percent_total": 98.98634422186127,
+  "partial_unexpected_list": []
+}
+----------------------------------------
+Expectation 13: expect_column_values_to_match_regex
+Column: job_posting_url
+Regex: ^https?://.+
+Success: True
+----------------------------------------
+Expectation 14: expect_column_values_to_match_regex
+Column: application_url
+Regex: ^https?://.+
+Success: False
+Result details:
+{
+  "element_count": 33246,
+  "missing_count": 12250,
+  "missing_percent": 36.84653792937496,
+  "unexpected_count": 23,
+  "unexpected_percent": 0.10954467517622404,
+  "unexpected_percent_total": 0.06918125488780605,
+  "unexpected_percent_nonmissing": 0.10954467517622404,
+  "partial_unexpected_list": [
+    "www.FSCedge.com",
+    "Indeed.com",
+    "www.tgnr.com/careers",
+    "www.precisionheavyhaul.com",
+    "Jobs.walgreens.com",
+    "https%3A%2F%2Fjsv3.recruitics.com%2Fredirect%3Frx_cid%3D505%26rx_jobId%3Ds191595-9379-734-2023213%26rx_url%3Dhttps%253A%252F%252Fwww.varsitytutors.com%252Ftutor-application%252Fapply%253Fcode_id%253Ds191595-9379-734-2023213%2526location%253DLeague%252520City%2526rx_campaign%253DLinkedin1%2526rx_ch%253Dconnector%2526rx_group%253D131614%2526rx_job%253Ds191595-9379-734-2023213%2526rx_medium%253Dpost%2526rx_r%253Dnone%2526rx_source%253DLinkedin%2526rx_ts%25+%3C%21%5BCDATA%5BVarsity+Tutors",
+    "www.KamelSolutions.com",
+    "Https://quantcad.com/jobs/",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3214&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-1671&T=20230823170447&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3280&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3155&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3081&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3076&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3156&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-2988&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3286&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-2609&T=20230823170448&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2022-4227&T=20230823170506&",
+    "HTTPS://rush.igreentree.com/CSS_External/CSSPage_Referred.ASP?Req=2023-3181&T=20230823170447&"
+  ]
+}
+----------------------------------------
+Expectation 15: expect_column_values_to_match_strftime_format
+Column: original_listed_time
+Strftime Format: %Y-%m-%d %H:%M:%S
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 16: expect_column_values_to_match_strftime_format
+Column: expiry
+Strftime Format: %Y-%m-%d %H:%M:%S
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 17: expect_column_values_to_match_strftime_format
+Column: closed_time
+Strftime Format: %Y-%m-%d %H:%M:%S
+Success: False
+Result details:
+{}
+----------------------------------------
+Expectation 18: expect_column_values_to_match_strftime_format
+Column: listed_time
+Strftime Format: %Y-%m-%d %H:%M:%S
+Success: False
+Result details:
+{}
+----------------------------------------
