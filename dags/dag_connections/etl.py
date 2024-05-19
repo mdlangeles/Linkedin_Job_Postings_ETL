@@ -167,7 +167,6 @@ def create_industry_dimension(df_linkedin):
 
 def create_jobs_dimension(df_linkedin):
     jobs_dimension = df_linkedin.drop(columns=[
-        'views',
         'posting_domain',
         'currency',
         'compensation_type',
@@ -369,4 +368,5 @@ def load_api(**kwargs):
 #     df_store = pd.json_normalize(data=json_data)
 
 #     upload_file("merge.csv","11xQ7d8wvT5wcHQToTfNAmsGUvceG_6cX")    
+#     logging.info( f"THe Data is Uploaded In GoogleDrive")G_6cX")    
 #     logging.info( f"THe Data is Uploaded In GoogleDrive")

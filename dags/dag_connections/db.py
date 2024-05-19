@@ -41,25 +41,25 @@ from sqlalchemy.orm import sessionmaker
 def create_data_warehouse():
     create_company_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_company(
-        company_id INT PRIMARY KEY,
-        industry_id INT,
+        company_id FLOAT PRIMARY KEY,
+        industry_id BIGINT,
         industry_name VARCHAR(255),
-        job_id INT
+        job_id BIGINT
     );
     '''
 
     create_industry_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_industry(
-        industry_id INT PRIMARY KEY,
+        industry_id BIGINT PRIMARY KEY,
         industry_name VARCHAR(255),
-        job_id INT
+        job_id BIGINT
     );
     '''
 
     create_salary_facts = '''
     CREATE TABLE IF NOT EXISTS fact_salary(
-        job_id INT PRIMARY KEY,
-        annual_salary INT,
+        job_id BIGINT PRIMARY KEY,
+        annual_salary FLOAT,
         compensation_type VARCHAR(255),
         currency VARCHAR(255)
     );
@@ -67,7 +67,7 @@ def create_data_warehouse():
 
     create_jobs_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_jobs(
-        job_id INT PRIMARY KEY,
+        job_id BIGINT PRIMARY KEY,
         job_posting_url VARCHAR(255),
         location VARCHAR(255),
         sponsored BOOLEAN,
@@ -94,19 +94,36 @@ def create_data_warehouse():
 def insert_data_warehouse(df, table):
     df = df.astype(str)
     column_names = df.columns.tolist()
-    insert_query = f"""
+    insert_salary_query = f"""
         INSERT INTO {table}({", ".join(column_names)})
         VALUES ({", ".join([f":{col}" for col in column_names])})
+        ON CONFLICT (job_id) DO UPDATE SET
+        currency = EXCLUDED.currency,
+        compensation_type = EXCLUDED.compensation_type,
+        annual_salary = EXCLUDED.annual_salary;
     """
+    # insert_company_query = f"""
+    #     INSERT INTO {table}({", ".join(column_names)})
+    #     VALUES ({", ".join([f":{col}" for col in column_names])})
+    #     ON CONFLICT (company_id) DO UPDATE SET
+    #     company_id = EXCLUDED.company_id,
+    #     industry_id = EXCLUDED.industry_id,
+    #     industry_name = EXCLUDED.industry_name,
+    # """
     engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
         for index, row in df.iterrows():
             values = {col: val for col, val in zip(column_names, row)}
-            session.execute(insert_query, values)
+            session.execute(insert_salary_query, values)
         session.commit()
         print(f"Data has been loaded into: {table}")
+
+        # for index, row in df.iterrows():
+        #     values = {col: val for col, val in zip(column_names, row)}
+        #     session.execute(insert_company_query, values)
+        # session.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
@@ -118,7 +135,7 @@ def insert_data_warehouse(df, table):
 def create_api_table(engine):
 
     class api(Base):
-        __tablename__ = 'API_transform'
+        _tablename_ = 'API_transform'
         id = Column(Integer, primary_key=True, autoincrement=True)
         work_year = Column(Integer, nullable=False)
         experience_level = Column(String(100), nullable=False)
@@ -132,7 +149,7 @@ def create_api_table(engine):
         company_size = Column(String(100), nullable=False)
 
     Base.metadata.create_all(engine)
-    api.__table__
+    api._table_
 
 def insert_merge():
     df_api = pd.read_csv(api_csv)
