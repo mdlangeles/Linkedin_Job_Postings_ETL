@@ -38,6 +38,86 @@ def create_session(engine):
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+# Dimensions and facts creation
+def create_company_dimension(df_linkedin):
+    company_dimension = df_linkedin.drop(columns=[
+        'title',
+        'description',
+        'formatted_work_type',
+        'location',
+        'views',
+        'job_posting_url',
+        'application_type',
+        'formatted_experience_level',
+        'posting_domain',
+        'sponsored',
+        'currency',
+        'compensation_type',
+        'scraped',
+        'annual_salary'   
+    ])
+
+    return company_dimension
+
+def create_industry_dimension(df_linkedin):
+    industry_dimension = df_linkedin.drop(columns=[
+        'title',
+        'description',
+        'formatted_work_type',
+        'location',
+        'views',
+        'job_posting_url',
+        'application_type',
+        'formatted_experience_level',
+        'posting_domain',
+        'sponsored',
+        'currency',
+        'compensation_type',
+        'scraped',
+        'annual_salary',
+        'company_id'  
+    ])
+
+    return industry_dimension
+
+def create_jobs_dimension(df_linkedin):
+    jobs_dimension = df_linkedin.drop(columns=[
+        'posting_domain',
+        'currency',
+        'compensation_type',
+        'industry_id',
+        'industry_name',
+        'scraped',
+        'annual_salary',
+        'company_id'  
+    ])
+
+    return jobs_dimension
+
+
+def create_salary_facts(df_linkedin):
+    fact_salary = df_linkedin.drop(columns=[
+        'company_id',
+        'title',
+        'description',
+        'formatted_work_type',
+        'location',
+        'views',
+        'job_posting_url',
+        'application_type',
+        'formatted_experience_level',
+        'posting_domain',
+        'sponsored',
+        'scraped',
+        'industry_id',
+        'industry_name',
+
+    ])
+
+    return fact_salary
+
+
+# Datawarehouse creation 
 def create_data_warehouse():
     create_company_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_company(
@@ -68,13 +148,17 @@ def create_data_warehouse():
     create_jobs_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_jobs(
         job_id BIGINT PRIMARY KEY,
-        job_posting_url VARCHAR(255),
+        title VARCHAR(255),
+        description TEXT,
+        formatted_work_type VARCHAR(255),
         location VARCHAR(255),
-        sponsored BOOLEAN,
-        title VARCHAR(255)
+        views FLOAT,
+        job_posting_url VARCHAR(255),
+        application_type VARCHAR(255),
+        formatted_experience_level VARCHAR(255),
+        sponsored BOOLEAN
     );
     '''
-
 
     engine = create_engine(db_connection)
     Session = sessionmaker(bind=engine)
@@ -91,7 +175,9 @@ def create_data_warehouse():
     finally:
         session.close()
 
-def insert_data_warehouse(df, table):
+
+# Datawarehouse insertion
+def insert_fact_data_warehouse(df, table):
     df = df.astype(str)
     column_names = df.columns.tolist()
     insert_salary_query = f"""
@@ -102,14 +188,7 @@ def insert_data_warehouse(df, table):
         compensation_type = EXCLUDED.compensation_type,
         annual_salary = EXCLUDED.annual_salary;
     """
-    # insert_company_query = f"""
-    #     INSERT INTO {table}({", ".join(column_names)})
-    #     VALUES ({", ".join([f":{col}" for col in column_names])})
-    #     ON CONFLICT (company_id) DO UPDATE SET
-    #     company_id = EXCLUDED.company_id,
-    #     industry_id = EXCLUDED.industry_id,
-    #     industry_name = EXCLUDED.industry_name,
-    # """
+
     engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -120,15 +199,97 @@ def insert_data_warehouse(df, table):
         session.commit()
         print(f"Data has been loaded into: {table}")
 
-        # for index, row in df.iterrows():
-        #     values = {col: val for col, val in zip(column_names, row)}
-        #     session.execute(insert_company_query, values)
-        # session.commit()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
         session.close()
-    
+
+def insert_company_data_warehouse(df, table):
+    df = df.astype(str)
+    column_names = df.columns.tolist()
+    insert_company_query = f"""
+        INSERT INTO {table}({", ".join(column_names)})
+        VALUES ({", ".join([f":{col}" for col in column_names])})
+        ON CONFLICT (company_id) DO UPDATE SET
+        industry_id = EXCLUDED.industry_id,
+        industry_name = EXCLUDED.industry_name,
+        job_id = EXCLUDED.job_id;
+    """
+
+    engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        for index, row in df.iterrows():
+            values = {col: val for col, val in zip(column_names, row)}
+            session.execute(insert_company_query, values)
+        session.commit()
+        print(f"Data has been loaded into: {table}")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        session.close()
+
+
+
+def insert_industry_data_warehouse(df, table):
+    df = df.astype(str)
+    column_names = df.columns.tolist()
+    insert_industry_query = f"""
+        INSERT INTO {table}({", ".join(column_names)})
+        VALUES ({", ".join([f":{col}" for col in column_names])})
+        ON CONFLICT (industry_id) DO UPDATE SET
+        industry_name = EXCLUDED.industry_name,
+        job_id = EXCLUDED.job_id;
+    """
+
+    engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        for index, row in df.iterrows():
+            values = {col: val for col, val in zip(column_names, row)}
+            session.execute(insert_industry_query, values)
+        session.commit()
+        print(f"Data has been loaded into: {table}")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        session.close()
+
+def insert_jobs_data_warehouse(df, table):
+    df = df.astype(str)
+    column_names = df.columns.tolist()
+    insert_jobs_query = f"""
+        INSERT INTO {table}({", ".join(column_names)})
+        VALUES ({", ".join([f":{col}" for col in column_names])})
+        ON CONFLICT (job_id) DO UPDATE SET
+        application_type = EXCLUDED.application_type,
+        description = EXCLUDED.description,
+        formatted_experience_level = EXCLUDED.formatted_experience_level,
+        formatted_work_type = EXCLUDED.formatted_work_type,
+        job_posting_url = EXCLUDED.job_posting_url,
+        location = EXCLUDED.location,
+        sponsored = EXCLUDED.sponsored,
+        title = EXCLUDED.title;
+    """
+
+    engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        for index, row in df.iterrows():
+            values = {col: val for col, val in zip(column_names, row)}
+            session.execute(insert_jobs_query, values)
+        session.commit()
+        print(f"Data has been loaded into: {table}")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        session.close()
 
 
 
