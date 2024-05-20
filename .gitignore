@@ -11,3 +11,4 @@ webserver_config.py
 logs/
 __pycache__/
 API_transform.csv
+dump.sql

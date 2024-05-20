@@ -4,6 +4,8 @@ import logging
 import psycopg2
 import os
 import sys
+#from kafka import KafkaProducer
+import datetime as dt
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -246,7 +248,46 @@ def load_api(**kwargs):
     return df_load_api.to_json(orient='records')
 
 
+def kafka_producer(batch_size=100):
+    
+    # retieve crime data
+    df = db.get_jobs_data()
 
+    # log first few rows of the df
+    logging.info(f"data is: {df.head()}")
+    print(f"row : {df.iloc[0].values}")
+
+    # set up KafkaProducer object
+    producer = KafkaProducer(
+        value_serializer = lambda m: json.dumps(m).encode('utf-8'),
+        bootstrap_servers = ['localhost:9092']
+    )
+ 
+    batch = []
+    
+    for _, row in df.iterrows():
+        # Convert row to json string
+        row_json = row.to_json()
+        batch.append(row_json)
+                
+        if len(batch) == batch_size:
+            # send the batch of rows as a single message to th3 topic
+            message = '\n'.join(batch) # batch is a list of josn strings with line breaks(\n)
+            producer.send("jobs_data", value=message)
+            # log message sent
+            print(f"new batch sent at {dt.datetime.utcnow()}")
+            # clear batch
+            batch = []
+#            sleep(10)
+
+    # if there are remaining rows that werent sent in a full batch:
+    if batch:
+        message = '\n'.join(batch)
+        producer.send("jobs_data", value=message)
+        print(f"last batch sent at {dt.datetime.utcnow()}")
+
+    # log completion message
+    print("All rows sent")
 
     
     

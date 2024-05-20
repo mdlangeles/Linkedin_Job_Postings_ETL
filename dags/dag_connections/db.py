@@ -3,6 +3,7 @@ import pandas as pd
 import sys
 import os
 import psycopg2
+import logging 
 sys.path.append(os.path.abspath("/opt/airflow/"))
 
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Float, CHAR
@@ -13,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 api_csv = './Data/jobs1.csv'
 
 
-with open('Credentials/keys_e.json', 'r') as json_file:
+with open('Credentials/keys.json', 'r') as json_file:
     data = json.load(json_file)
     user = data["user"]
     password = data["password"]
@@ -318,3 +319,29 @@ def insert_merge():
 
 def finish_engine(engine):
     engine.dispose()
+
+def get_jobs_data():
+        
+    try: 
+        conx = create_engine()
+        cursor = conx.cursor()
+
+        get_data = "SELECT * FROM jobslinkedinsalary"
+        
+        cursor.execute(get_data)
+
+        data = cursor.fetchall()
+        columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
+                   'industry_name','annual_salary']
+        
+        df = pd.DataFrame(data, columns=columns)
+
+        conx.commit()
+        cursor.close()
+        conx.close()
+
+        logging.info("Data fetched successfully")
+        return df
+
+    except Exception as err:
+        logging.error(f"Error while getting data: {err}")
