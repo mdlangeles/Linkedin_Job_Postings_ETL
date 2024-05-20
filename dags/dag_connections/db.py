@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 api_csv = './Data/jobs1.csv'
 
 
-with open('Credentials/keys.json', 'r') as json_file:
+with open('Credentials/keys_e.json', 'r') as json_file:
     data = json.load(json_file)
     user = data["user"]
     password = data["password"]
@@ -292,8 +292,16 @@ def insert_jobs_data_warehouse(df, table):
     finally:
         session.close()
 
+def insert_transform_db(df_linkedin):
+    df_linkedin.to_sql('jobslinkedinsalary', engine, if_exists='replace', index=False)
 
 
+
+
+
+
+
+# API
 def create_api_table(engine):
 
     class api(Base):

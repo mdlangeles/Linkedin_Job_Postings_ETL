@@ -135,6 +135,12 @@ def load_linkedin(**kwargs):
     json_data = json.loads(data_strg)
     df_linkedin = pd.json_normalize(data=json_data)
 
+    engine = engine_creation()
+    insert_transform_db(df_linkedin)
+    finish_engine(engine)
+
+    logging.info("Df_linkedin loaded into database")
+
     create_data_warehouse()
     
     fact_salary = create_salary_facts(df_linkedin)
@@ -155,6 +161,7 @@ def load_linkedin(**kwargs):
 
 
     logging.info("Data loaded into data warehouse")
+
 
     return df_linkedin.to_json(orient='records')
 
