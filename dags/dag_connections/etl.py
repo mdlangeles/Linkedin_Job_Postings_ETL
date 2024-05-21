@@ -4,7 +4,7 @@ import logging
 import psycopg2
 import os
 import sys
-#from kafka import KafkaProducer
+from kafka import KafkaProducer
 import datetime as dt
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine

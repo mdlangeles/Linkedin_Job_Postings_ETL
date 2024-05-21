@@ -292,16 +292,8 @@ def insert_jobs_data_warehouse(df, table):
     finally:
         session.close()
 
-def insert_transform_db(df_linkedin):
-    df_linkedin.to_sql('jobslinkedinsalary', engine, if_exists='replace', index=False)
 
 
-
-
-
-
-
-# API
 def create_api_table(engine):
 
     class api(Base):
@@ -334,7 +326,7 @@ def get_jobs_data():
         conx = create_engine()
         cursor = conx.cursor()
 
-        get_data = "SELECT * FROM jobslinkedinsalary"
+        get_data = "SELECT * FROM linkedinjobsalary"
         
         cursor.execute(get_data)
 

@@ -77,6 +77,12 @@ with DAG(
         provide_context = True,
         )
     
+    kafka_producer_task = PythonOperator(
+	    task_id= 'kafka_producer_task',
+	    python_callable = kafka_producer,
+	    provide_context = True,
+	)
+    
     # merge_task = PythonOperator(
     #     task_id='merge_task',
     #     python_callable=merge,
@@ -100,6 +106,6 @@ with DAG(
     read_db_jobs >> jobs_merge
     read_db_industries >> jobs_merge 
 
-    jobs_merge >> transform_db_linkedin >> load_linkedin_task
+    jobs_merge >> transform_db_linkedin >> load_linkedin_task >> kafka_producer_task
     
     read_db_api >> transform_api_task >> load_api_task
