@@ -12,4 +12,5 @@ logs/
 __pycache__/
 API_transform.csv
 dump.sql
+Credentials/
 
