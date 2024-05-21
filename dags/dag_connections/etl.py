@@ -159,31 +159,6 @@ def load_linkedin(**kwargs):
 
     return df_linkedin.to_json(orient='records')
 
-# def load_linkedin(**kwargs):
-#     logging.info("Starting data loading process...")
-#     ti = kwargs["ti"]
-    
-#     create_data_warehouse()
-    
-#     fact_salary = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin")))
-#     logging.info('Number of rows loaded into fact_salary: %s', len(fact_salary))
-#     insert_data_warehouse(fact_salary,'fact_salary')
-
-#     company_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='dim_company')))
-#     logging.info('Number of rows loaded into dim_company: %s', len(company_dimension))
-#     insert_data_warehouse(company_dimension,'dim_company')
-
-#     industry_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='dim_industry')))
-#     logging.info('Number of rows loaded into dim_industry: %s', len(industry_dimension))
-#     insert_data_warehouse(industry_dimension,'dim_industry')
-
-#     jobs_dimension = pd.json_normalize(json.loads(ti.xcom_pull(task_ids="transform_db_linkedin", key='dim_jobs')))
-#     logging.info('Number of rows loaded into jobs_dimension: %s', len(jobs_dimension))
-#     insert_data_warehouse(jobs_dimension,'dim_jobs')
-
-
-#     logging.info("Data loaded into data warehouse")
-
 
 
 
@@ -254,68 +229,42 @@ def kafka_producer(**kwargs):
     data_strg = ti.xcom_pull(task_ids='transform_db_linkedin')
     json_data = json.loads(data_strg)
 
-    df_linkedin = pd.json_normalize(data=json_data)
-
+    df= pd.json_normalize(data=json_data)
+    df_linkedin = df[['title', 'formatted_work_type', 'location', 'views', 'application_type', 
+                               'formatted_experience_level', 'industry_name', 'annual_salary']]
     logging.info(f"data is: {df_linkedin.head(5)}")
 
     producer = KafkaProducer(
         value_serializer = lambda m: json.dumps(m).encode('utf-8'),
         bootstrap_servers = ['localhost:9092']
     )
-
-    for index, row in df_linkedin.iterrows():
-        row_dict = row.to_dict()
-        json_row = json.dumps(row_dict)
-        producer.send("linkedin", value=json_row)
-        logging.info(f"new row sent at {dt.datetime.utcnow()}")
-        logging.info(f"Data sent")
-
-    producer.close()
-
-
-
-
-
-# def kafka_producer(batch_size=500):
-    
-#     # retieve crime data
-#     df_linkedin = get_jobs_data()
-
-#     # log first few rows of the df
-#     logging.info(f"data is: {df_linkedin.head(5)}")
-#     print(f"row : {df_linkedin.iloc[0].values}")
-
-#     # set up KafkaProducer object
-#     producer = KafkaProducer(
-#         value_serializer = lambda m: json.dumps(m).encode('utf-8'),
-#         bootstrap_servers = ['localhost:9092']
-#     )
  
-#     batch = []
+    batch = []
     
-#     for _, row in df_linkedin.iterrows():
-#         # Convert row to json string
-#         row_json = row.to_json()
-#         batch.append(row_json)
+    batch_size = 500  
+
+    for _, row in df_linkedin.iterrows():
+        
+        row_json = row.to_json()
+        batch.append(row_json)
                 
-#         if len(batch) == batch_size:
-#             # send the batch of rows as a single message to th3 topic
-#             message = '\n'.join(batch) # batch is a list of josn strings with line breaks(\n)
-#             producer.send("jobs_stream_kafka", value=message)
-#             # log message sent
-#             print(f"new batch sent at {dt.datetime.utcnow()}")
-#             # clear batch
-#             batch = []
-# #            sleep(10)
+        if len(batch) == batch_size:
+            
+            message = '\n'.join(batch) 
+            producer.send("linkedin.streaming", value=message)
+            
+            print(f"new batch sent at {dt.datetime.utcnow()}")
+            
+            batch = []
 
-#     # if there are remaining rows that werent sent in a full batch:
-#     if batch:
-#         message = '\n'.join(batch)
-#         producer.send("jobs_stream_kafka", value=message)
-#         print(f"last batch sent at {dt.datetime.utcnow()}")
+    if batch:
+        message = '\n'.join(batch)
+        producer.send("linkedin.streaming", value=message)
+        print(f"last batch sent at {dt.datetime.utcnow()}")
 
-#     # log completion message
-#     print("All rows sent")
+    print("All rows sent")
+
+
 
     
     
