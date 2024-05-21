@@ -10,14 +10,32 @@ from api_endp import endpoint
 
 print("Kafka Consumer App Start!")
  
-consumer = KafkaConsumer('jobs_stream',
-                        # auto_offset_reset='earliest', 
+consumer = KafkaConsumer('linkedin',
+                        auto_offset_reset='earliest', 
                         enable_auto_commit=True, 
                         group_id='my-group-1',
                         value_deserializer=lambda m: loads(m.decode('utf-8')),
                         bootstrap_servers=['localhost:9092'])
 
-batch = [] 
+streaming = []
+
+for message in consumer:
+    data = message.value
+    streaming.append(data)
+
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(endpoint, json=data, headers=headers)
+
+    if response.status_code == 200:
+        print("Datos enviados exitosamente a Power BI")
+
+    else:
+        print(f"Fallo al enviar datos a Power BI. Código de estado: {response.status_code}")
+
+        sleep(0.2)
+
+
+
 
 for data_json in consumer:
     s = data_json.value

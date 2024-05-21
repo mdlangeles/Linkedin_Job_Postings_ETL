@@ -11,16 +11,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Boolean, Date, CHAR
 sys.path.append(os.path.abspath("/opt/airflow/dags/dag_connections/"))
-# sys.path.append(os.path.abspath("/home/emmanuel/Escritorio/linkedin_job_postings_etl/"))
-# sys.path.append(os.path.abspath("/home/emmanuel/Escritorio/linkedin_job_postings_etl/dags/dag_connections"))
-# sys.path.append(os.path.abspath("/opt/airflow/dags/dag_connections/"))
-# from transformations.transformations import delete_column, delete_duplicated_id, duration_transformation, cat_genre, drop_transformation, fill_na_merge, fill_na_merge1, category_na, nominee, delete_artist, title
-# from transformations.transformations import drop_columns, parenthesis_transformation, fill_nulls_first, fill_nulls_arts, fill_nulls_worker, drop_nulls, lower_case, rename_column
 from dag_connections.db import *
 from transformations.transformations import *
-# from driveconf import upload_file
 
-
+logging.basicConfig(level=logging.INFO)
 
 def read_linkedin():
     query = "SELECT * FROM jobslinkedin"
@@ -255,46 +249,73 @@ def load_api(**kwargs):
     return df_load_api.to_json(orient='records')
 
 
-def kafka_producer(batch_size=100):
-    
-    # retieve crime data
-    df_linkedin = get_jobs_data()
+def kafka_producer(**kwargs):
+    ti = kwargs['ti']
+    data_strg = ti.xcom_pull(task_ids='transform_db_linkedin')
+    json_data = json.loads(data_strg)
 
-    # log first few rows of the df
+    df_linkedin = pd.json_normalize(data=json_data)
+
     logging.info(f"data is: {df_linkedin.head(5)}")
-    print(f"row : {df_linkedin.iloc[0].values}")
 
-    # set up KafkaProducer object
     producer = KafkaProducer(
         value_serializer = lambda m: json.dumps(m).encode('utf-8'),
         bootstrap_servers = ['localhost:9092']
     )
- 
-    batch = []
+
+    for index, row in df_linkedin.iterrows():
+        row_dict = row.to_dict()
+        json_row = json.dumps(row_dict)
+        producer.send("linkedin", value=json_row)
+        logging.info(f"new row sent at {dt.datetime.utcnow()}")
+        logging.info(f"Data sent")
+
+    producer.close()
+
+
+
+
+
+# def kafka_producer(batch_size=500):
     
-    for _, row in df_linkedin.iterrows():
-        # Convert row to json string
-        row_json = row.to_json()
-        batch.append(row_json)
+#     # retieve crime data
+#     df_linkedin = get_jobs_data()
+
+#     # log first few rows of the df
+#     logging.info(f"data is: {df_linkedin.head(5)}")
+#     print(f"row : {df_linkedin.iloc[0].values}")
+
+#     # set up KafkaProducer object
+#     producer = KafkaProducer(
+#         value_serializer = lambda m: json.dumps(m).encode('utf-8'),
+#         bootstrap_servers = ['localhost:9092']
+#     )
+ 
+#     batch = []
+    
+#     for _, row in df_linkedin.iterrows():
+#         # Convert row to json string
+#         row_json = row.to_json()
+#         batch.append(row_json)
                 
-        if len(batch) == batch_size:
-            # send the batch of rows as a single message to th3 topic
-            message = '\n'.join(batch) # batch is a list of josn strings with line breaks(\n)
-            producer.send("jobs_stream", value=message)
-            # log message sent
-            print(f"new batch sent at {dt.datetime.utcnow()}")
-            # clear batch
-            batch = []
-#            sleep(10)
+#         if len(batch) == batch_size:
+#             # send the batch of rows as a single message to th3 topic
+#             message = '\n'.join(batch) # batch is a list of josn strings with line breaks(\n)
+#             producer.send("jobs_stream_kafka", value=message)
+#             # log message sent
+#             print(f"new batch sent at {dt.datetime.utcnow()}")
+#             # clear batch
+#             batch = []
+# #            sleep(10)
 
-    # if there are remaining rows that werent sent in a full batch:
-    if batch:
-        message = '\n'.join(batch)
-        producer.send("jobs_stream", value=message)
-        print(f"last batch sent at {dt.datetime.utcnow()}")
+#     # if there are remaining rows that werent sent in a full batch:
+#     if batch:
+#         message = '\n'.join(batch)
+#         producer.send("jobs_stream_kafka", value=message)
+#         print(f"last batch sent at {dt.datetime.utcnow()}")
 
-    # log completion message
-    print("All rows sent")
+#     # log completion message
+#     print("All rows sent")
 
     
     
