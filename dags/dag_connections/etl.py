@@ -139,7 +139,7 @@ def load_linkedin(**kwargs):
     insert_transform_db(df_linkedin)
     finish_engine(engine)
 
-    logging.info("Df_linkedin loaded into database")
+    logging.info("df_linkedin loaded into database")
 
     create_data_warehouse()
     
@@ -258,11 +258,11 @@ def load_api(**kwargs):
 def kafka_producer(batch_size=100):
     
     # retieve crime data
-    df = db.get_jobs_data()
+    df_linkedin = get_jobs_data()
 
     # log first few rows of the df
-    logging.info(f"data is: {df.head()}")
-    print(f"row : {df.iloc[0].values}")
+    logging.info(f"data is: {df_linkedin.head(5)}")
+    print(f"row : {df_linkedin.iloc[0].values}")
 
     # set up KafkaProducer object
     producer = KafkaProducer(
@@ -272,7 +272,7 @@ def kafka_producer(batch_size=100):
  
     batch = []
     
-    for _, row in df.iterrows():
+    for _, row in df_linkedin.iterrows():
         # Convert row to json string
         row_json = row.to_json()
         batch.append(row_json)
@@ -280,7 +280,7 @@ def kafka_producer(batch_size=100):
         if len(batch) == batch_size:
             # send the batch of rows as a single message to th3 topic
             message = '\n'.join(batch) # batch is a list of josn strings with line breaks(\n)
-            producer.send("jobs_data", value=message)
+            producer.send("jobs_stream", value=message)
             # log message sent
             print(f"new batch sent at {dt.datetime.utcnow()}")
             # clear batch
@@ -290,7 +290,7 @@ def kafka_producer(batch_size=100):
     # if there are remaining rows that werent sent in a full batch:
     if batch:
         message = '\n'.join(batch)
-        producer.send("jobs_data", value=message)
+        producer.send("jobs_stream", value=message)
         print(f"last batch sent at {dt.datetime.utcnow()}")
 
     # log completion message
@@ -298,48 +298,3 @@ def kafka_producer(batch_size=100):
 
     
     
-    # df_merge = df_spotify.merge(grammys_df, how='left', left_on='track_name', right_on='nominee')
-    # df_merge = fill_na_merge(df_merge)
-    # df_merge= fill_na_merge1(df_merge)
-    # df_merge=delete_artist(df_merge)
-    # df_merge=category_na(df_merge)
-    # df_merge=nominee(df_merge)
-    # df_merge=title(df_merge)
-    # logging.info( f"THe merge is Done")
-    # logging.info(f"The dimension is: {df_merge.shape}")
-    # logging.info(f"the columns are: {df_merge.columns}")
-
-
-
-    # return df_merge.to_json(orient='records')
-
-
-# def load(**kwargs):
-#     logging.info("Load proccess is started")
-#     ti = kwargs["ti"]
-#     data_strg = ti.xcom_pull(task_ids="merge_task")
-#     json_data = json.loads(data_strg)
-#     df_load = pd.json_normalize(data=json_data)
-#     engine = engine_creation()
-
-#     df_load.to_sql('merge', engine, if_exists='replace', index=False)
-
-#     #Close the connection to the DB
-#     finish_engine(engine)
-#     df_load.to_csv("merge.csv", index=False)
-#     logging.info( f"Merge is ready")
-
-#     return df_load.to_json(orient='records')
-
-
-
-# def store(**kwargs):
-#     logging.info("The Store Process has Started")
-#     ti = kwargs["ti"]
-#     data_strg = ti.xcom_pull(task_ids="load_task")
-#     json_data = json.loads(data_strg)
-#     df_store = pd.json_normalize(data=json_data)
-
-#     upload_file("merge.csv","11xQ7d8wvT5wcHQToTfNAmsGUvceG_6cX")    
-#     logging.info( f"THe Data is Uploaded In GoogleDrive")G_6cX")    
-#     logging.info( f"THe Data is Uploaded In GoogleDrive")

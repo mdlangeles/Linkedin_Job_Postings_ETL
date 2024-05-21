@@ -292,7 +292,8 @@ def insert_jobs_data_warehouse(df, table):
     finally:
         session.close()
 
-
+def insert_transform_db(df_linkedin):
+    df_linkedin.to_sql('linkedinjobsalary', engine, if_exists='replace', index=False)
 
 def create_api_table(engine):
 
@@ -320,28 +321,42 @@ def insert_merge():
 def finish_engine(engine):
     engine.dispose()
 
+# def get_jobs_data():
+#     engine = engine_creation()
+#     conx = engine.connect()
+#     cursor = conx.connection.cursor()
+#     try:
+        
+#         get_data = "SELECT * FROM linkedinjobsalary"
+        
+#         cursor.execute(get_data)
+
+#         data = cursor.fetchall()
+#         columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
+#                    'industry_name','annual_salary']
+        
+#         df_linkedin = pd.DataFrame(data, columns=columns)
+
+#         conx.commit()
+#         cursor.close()
+#         conx.close()
+
+#         logging.info("Data fetched successfully")
+#         return df_linkedin
+
+#     except Exception as err:
+#         logging.error(f"Error while getting data: {err}")
+
+
 def get_jobs_data():
+
+    query = "SELECT * FROM linkedinjobsalary"
+    engine = engine_creation()
+    df_link = pd.read_sql(query, engine)
+    columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
+               'industry_name','annual_salary']
+    df_linkedin = pd.DataFrame(df_link, columns=columns)
+    logging.info("Data fetched successfully %s", df_linkedin.head(5))
+    return df_linkedin
+    
         
-    try: 
-        conx = create_engine()
-        cursor = conx.cursor()
-
-        get_data = "SELECT * FROM linkedinjobsalary"
-        
-        cursor.execute(get_data)
-
-        data = cursor.fetchall()
-        columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
-                   'industry_name','annual_salary']
-        
-        df = pd.DataFrame(data, columns=columns)
-
-        conx.commit()
-        cursor.close()
-        conx.close()
-
-        logging.info("Data fetched successfully")
-        return df
-
-    except Exception as err:
-        logging.error(f"Error while getting data: {err}")

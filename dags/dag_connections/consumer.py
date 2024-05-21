@@ -10,7 +10,7 @@ from api_endp import endpoint
 
 print("Kafka Consumer App Start!")
  
-consumer = KafkaConsumer('jobs_data',
+consumer = KafkaConsumer('jobs_stream',
                         # auto_offset_reset='earliest', 
                         enable_auto_commit=True, 
                         group_id='my-group-1',

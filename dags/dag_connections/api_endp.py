@@ -1,1 +1,1 @@
-endpoint=()
+endpoint=("https://api.powerbi.com/beta/693cbea0-4ef9-4254-8977-76e05cb5f556/datasets/7b4d62f5-dbce-4e42-af5d-0b9180c5efa8/rows?experience=power-bi&key=i6Sio%2BDpOJtWztvXPRebG5t%2Fxe2bPHjEqOo32wM%2FdHeKEZjYW4sOWq3U%2Fllkcm5rNPvTrJHk%2B30pR22izDvkGw%3D%3D")
