@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 api_csv = './Data/jobs1.csv'
 
 
-with open('Credentials/keys_e.json', 'r') as json_file:
+with open('Credentials/keys.json', 'r') as json_file:
     data = json.load(json_file)
     user = data["user"]
     password = data["password"]
@@ -125,7 +125,8 @@ def create_data_warehouse():
         company_id FLOAT PRIMARY KEY,
         industry_id BIGINT,
         industry_name VARCHAR(255),
-        job_id BIGINT
+        job_id BIGINT,
+        FOREIGN KEY (job_id) REFERENCES fact_salary(job_id)
     );
     '''
 
@@ -133,7 +134,8 @@ def create_data_warehouse():
     CREATE TABLE IF NOT EXISTS dim_industry(
         industry_id BIGINT PRIMARY KEY,
         industry_name VARCHAR(255),
-        job_id BIGINT
+        job_id BIGINT,
+        FOREIGN KEY (job_id) REFERENCES fact_salary(job_id)
     );
     '''
 
@@ -142,7 +144,8 @@ def create_data_warehouse():
         job_id BIGINT PRIMARY KEY,
         annual_salary FLOAT,
         compensation_type VARCHAR(255),
-        currency VARCHAR(255)
+        currency VARCHAR(255),
+        FOREIGN KEY (job_id) REFERENCES dim_jobs(job_id)
     );
     '''
 
@@ -165,8 +168,8 @@ def create_data_warehouse():
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        session.execute(create_salary_facts)
         session.execute(create_jobs_dimension)
+        session.execute(create_salary_facts)
         session.execute(create_company_dimension)
         session.execute(create_industry_dimension)
         session.commit()
@@ -217,7 +220,7 @@ def insert_company_data_warehouse(df, table):
         job_id = EXCLUDED.job_id;
     """
 
-    engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
+    engine = create_engine(db_connection)  
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
@@ -277,7 +280,7 @@ def insert_jobs_data_warehouse(df, table):
         title = EXCLUDED.title;
     """
 
-    engine = create_engine(db_connection)  # Asegúrate de que db_connection es la cadena de conexión a tu base de datos
+    engine = create_engine(db_connection)  
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
@@ -292,8 +295,7 @@ def insert_jobs_data_warehouse(df, table):
     finally:
         session.close()
 
-def insert_transform_db(df_linkedin):
-    df_linkedin.to_sql('linkedinjobsalary', engine, if_exists='replace', index=False)
+
 
 def create_api_table(engine):
 
@@ -321,42 +323,28 @@ def insert_merge():
 def finish_engine(engine):
     engine.dispose()
 
-# def get_jobs_data():
-#     engine = engine_creation()
-#     conx = engine.connect()
-#     cursor = conx.connection.cursor()
-#     try:
-        
-#         get_data = "SELECT * FROM linkedinjobsalary"
-        
-#         cursor.execute(get_data)
-
-#         data = cursor.fetchall()
-#         columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
-#                    'industry_name','annual_salary']
-        
-#         df_linkedin = pd.DataFrame(data, columns=columns)
-
-#         conx.commit()
-#         cursor.close()
-#         conx.close()
-
-#         logging.info("Data fetched successfully")
-#         return df_linkedin
-
-#     except Exception as err:
-#         logging.error(f"Error while getting data: {err}")
-
-
 def get_jobs_data():
-
-    query = "SELECT * FROM linkedinjobsalary"
-    engine = engine_creation()
-    df_link = pd.read_sql(query, engine)
-    columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
-               'industry_name','annual_salary']
-    df_linkedin = pd.DataFrame(df_link, columns=columns)
-    logging.info("Data fetched successfully %s", df_linkedin.head(5))
-    return df_linkedin
-    
         
+    try: 
+        conx = create_engine()
+        cursor = conx.cursor()
+
+        get_data = "SELECT * FROM linkedinjobsalary"
+        
+        cursor.execute(get_data)
+
+        data = cursor.fetchall()
+        columns = ['title','formatted_work_type','location','views','application_type','formatted_experience_level', 
+                   'industry_name','annual_salary']
+        
+        df = pd.DataFrame(data, columns=columns)
+
+        conx.commit()
+        cursor.close()
+        conx.close()
+
+        logging.info("Data fetched successfully")
+        return df
+
+    except Exception as err:
+        logging.error(f"Error while getting data: {err}")

@@ -83,23 +83,6 @@ with DAG(
 	    provide_context = True,
 	)
     
-    # merge_task = PythonOperator(
-    #     task_id='merge_task',
-    #     python_callable=merge,
-    #     provide_context = True,
-    #     )
-    
-    # load_task = PythonOperator(
-    #     task_id='load_task',
-    #     python_callable=load,
-    #     provide_context = True,
-    #     )
-    
-    # store_task = PythonOperator(
-    #     task_id='store_task',
-    #     python_callable=store,
-    #     provide_context = True,
-    #     )
 
     
     read_db_linkedin >> jobs_merge 

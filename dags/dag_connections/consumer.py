@@ -36,13 +36,13 @@ for data_json in consumer:
                 response = requests.post(url, json=row_dict, headers=headers)
 
                 if response.status_code == 200:
-                    print("Datos enviados exitosamente a Power BI")
+                    print("Data successfully sent to Power BI")
                 else:
-                    print(f"Fallo al enviar datos a Power BI. Código de estado: {response.status_code}")
+                    print(f"Failed to send data to Power BI. Status code: {response.status_code}")
 
 
         except json.JSONDecodeError as e:
-            print(f"Error al decodificar JSON: {e}")
+            print(f"Error decoding JSON: {e}")
     
         sleep(2)
 

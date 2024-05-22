@@ -130,7 +130,7 @@ def load_linkedin(**kwargs):
     df_linkedin = pd.json_normalize(data=json_data)
 
     engine = engine_creation()
-    insert_transform_db(df_linkedin)
+    #insert_transform_db(df_linkedin)
     finish_engine(engine)
 
     logging.info("df_linkedin loaded into database")
