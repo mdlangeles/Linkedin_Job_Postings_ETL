@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 api_csv = './Data/jobs1.csv'
 
 
-with open('Credentials/keys.json', 'r') as json_file:
+with open('Credentials/keys_e.json', 'r') as json_file:
     data = json.load(json_file)
     user = data["user"]
     password = data["password"]
@@ -126,7 +126,7 @@ def create_data_warehouse():
         industry_id BIGINT,
         industry_name VARCHAR(255),
         job_id BIGINT,
-        FOREIGN KEY (job_id) REFERENCES fact_salary(job_id)
+        FOREIGN KEY (job_id) REFERENCES dim_jobs(job_id)
     );
     '''
 
@@ -135,11 +135,11 @@ def create_data_warehouse():
         industry_id BIGINT PRIMARY KEY,
         industry_name VARCHAR(255),
         job_id BIGINT,
-        FOREIGN KEY (job_id) REFERENCES fact_salary(job_id)
+        FOREIGN KEY (job_id) REFERENCES dim_jobs(job_id)
     );
-    '''
+    ''' 
 
-    create_salary_facts = '''
+    create_salary_facts = '''   
     CREATE TABLE IF NOT EXISTS fact_salary(
         job_id BIGINT PRIMARY KEY,
         annual_salary FLOAT,
@@ -147,7 +147,7 @@ def create_data_warehouse():
         currency VARCHAR(255),
         FOREIGN KEY (job_id) REFERENCES dim_jobs(job_id)
     );
-    '''
+    ''' 
 
     create_jobs_dimension = '''
     CREATE TABLE IF NOT EXISTS dim_jobs(
