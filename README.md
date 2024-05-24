@@ -192,7 +192,8 @@ To create our dimensional model we used Power BI and the process was as follows:
 
 Leaving our dimensional model like this:
 
-![alt text](Dimensional_Model/image.png) 
+![4994fc7f-604a-41d6-a296-7dfbdac412a6](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/57efe876-4676-4d29-84fd-7dcc5f03b0cb)
+
 
 5  Finally, we only make our visualizations by selecting the columns or items of each dimension that we would use to make the graphs.
 
@@ -217,3 +218,47 @@ Subsequently, the table structure for postgres was created and the transformed d
 We connect to postgres like this in steps 8, 8.1, 8.2 and 8.3, we select the table with the name we gave it when creating it
 
 And now we can make the graphs. This is our API dashboard: [Our API Dashboard](Visualizations/dimensional_model_visual.pdf)
+
+
+# Linkedin Job Postings - ETL - Part #3 (Final Part)
+
+## Overview
+To carry out the third and final part of our project, we include new tools and processes such as Apache Airflow for the automation of our project and the tasks that will be shown later. Additionally, the Apache Kafka "tool" was implemented to stream the data through a topic that was created to be able to stream the data through a producer and be received by a consumer to be sent to a Power BI real-time dashboard. Finally in this final stage of our project, we added Great Expectations to our project. This process allowed us to perform a thorough validation, ensuring that the data meets predefined standards and criteria. Through Great Expectations, we verify crucial aspects such as consistency, integrity, validity and accuracy of our data sets. This included checking consistency between different fields, identifying outliers or null values, as well as validating data formats and ranges.
+
+We use the following expectations:
+
+- Expect Column Values to not be Null: This expectation ensures that none of the rows in a specific column contain null values (or None in Python).
+
+- Expect Column Values to be Greater than: This expectation checks that all values in a column are greater than a specific value.
+
+- Expect Column Values to match Regex: This expectation checks that the values in a column match a specific regular expression (regex).
+
+- Expect Column Values to Match Strftime format: This expectation checks that the values in a column match a specified date and time format using the strftime format.
+
+##### Note: For the final part of our project we decided to do it on a virtual machine with Ubuntu operating system as an alternative to Docker to run Airflow and Kafka.
+
+
+## Tools Finally Used
+
+- Python
+    
+- Pandas
+    
+- PowerBI (Desktop for part 1 & 2 and Cloud for Final Part)
+    
+- SQLAlchemy
+    
+- PostgreSQL
+    
+- Jupyter Notebook
+
+- Apache Kafka
+
+- Apache Airflow
+
+- Great Expectations
+
+- VM with Ubuntu System for Final Part
+
+
+
