@@ -133,7 +133,7 @@ python -m venv env
 ```
 5. Install libraries:
 ```bash
-pip install requirements
+pip install -r requirements.txt
 ```
 6. Create a database in PostgreSQL
 7. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 4 sections :
@@ -274,33 +274,9 @@ First of all, to be able to run the project and later kafka, you need to have ka
 
 Once Kafka is installed, a Kafka folder should be created where you have downloaded it and subsequently extracted it.
 
-1. Go to Visual Studio Code and clone the repository:
-```bash
-https://github.com/mdlangeles/linkedin_job_postings_etl.git
-```
 
-2. Go to project directory:
-```bash
-cd linkedin_job_postings_etl
-```
-
-3. Create a virtual environment:
-```bash
-python3 -m venv venv
-```
-
-4. Activate virtual environment:
-```bash
-source bin/venv/activate
-```
-
-5. Install libraries:
-```bash
-pip install -r requirements.txt
-```
-
-6. Create a database in PostgreSQL
-7. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 4 sections :
+1. Create a database in PostgreSQL
+2. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 4 sections :
 - We recommend you start with section #1: Import the modules, make the connection to the database, and load the data into it.
   
     ##### Note: In this section, you must change the name of the JSON file to the name of the JSON file that you need to create to be able to make the connection to the database. In our case the name of my file was keys.json. If you decide to name your file the same way, remember to change the values specified in the Database Configuration field located in the README.
@@ -313,11 +289,11 @@ pip install -r requirements.txt
 #### Note: If you still have doubts, you can review section 1 and 2 of the readme to understand well and replicate the steps for creating the tables.
 
 
-8. Running airflow
+3. Running airflow
 
 Once the tables are created in postgres you can start airflow
 
-8.1 Airflow Standalone
+3.1 Airflow Standalone
 The first step now is to do the following command in a different terminal but not from vscode, preferably a cmd of the operating system and inside the project directory:
 
 ```bash
@@ -338,7 +314,7 @@ airflow standalone
 Once the airflow command is done it will start running
 
 
-8.2 Airflow Login
+3.2 Airflow Login
 Once airflow has started running, the password to access airflow will appear in the console as follows:
 
 ![WhatsApp Image 2024-05-24 at 9 49 11 PM](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/6c0ff4f1-bf62-4895-9002-e286c1ed7320)
