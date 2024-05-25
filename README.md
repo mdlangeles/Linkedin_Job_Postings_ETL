@@ -270,7 +270,7 @@ This is the project workflow:
 
 First of all, to be able to run the project and later kafka, you need to have kafka installed in the virtual machine and kafka-python within the virtual environment and Apache Airflow. Here are the steps to run the project:
 
-![Kafka Guide](https://www.youtube.com/watch?v=yips4_qd1j0&ab_channel=EazyPeazyGeeky)
+[Kafka Guide](https://www.youtube.com/watch?v=yips4_qd1j0&ab_channel=EazyPeazyGeeky)
 
 Once Kafka is installed, a Kafka folder should be created where you have downloaded it and subsequently extracted it.
 
@@ -414,7 +414,7 @@ In our case, once the data arrived, this is how the dashboard looked like:
 ![00422aa4-a6f7-4c43-b890-a63c86d3af8e](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/76b23e81-f1ad-4716-b044-51daae0973de)
 
 Here's a video that you can play to see the real process:
-![Video Project](https://drive.google.com/file/d/1JHuj9ig3mrOFlDgkdsbDa80e4lONRu99/view)
+[Video Project](https://drive.google.com/file/d/1JHuj9ig3mrOFlDgkdsbDa80e4lONRu99/view)
 
 ## Thanks:
 This is how our project ends, once the dashboard has run you can check pgadmin where you will see the dimensions and the fact table that was created during the load task.
