@@ -275,30 +275,36 @@ First of all, to be able to run the project and later kafka, you need to have ka
 Once Kafka is installed, a Kafka folder should be created where you have downloaded it and subsequently extracted it.
 
 1. Go to Visual Studio Code and clone the repository:
-bash
+```bash
 https://github.com/mdlangeles/linkedin_job_postings_etl.git
-
+```
 
 2. Go to project directory:
-bash
+```bash
 cd linkedin_job_postings_etl
+```
 
 3. Create a virtual environment:
-bash
+```bash
 python3 -m venv venv
+```
 
 4. Activate virtual environment:
-bash
+```bash
 source bin/venv/activate
+```
 
 5. Install libraries:
-bash
+```bash
 pip install -r requirements.txt
+```
 
 6. Create a database in PostgreSQL
 7. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 4 sections :
 - We recommend you start with section #1: Import the modules, make the connection to the database, and load the data into it.
+  
     ##### Note: In this section, you must change the name of the JSON file to the name of the JSON file that you need to create to be able to make the connection to the database. In our case the name of my file was keys.json. If you decide to name your file the same way, remember to change the values specified in the Database Configuration field located in the README.
+  
 - The second step is to execute section 2, which is where the exploratory analysis carried out on the 3 tables with which we initially worked is located.
 - The third step is to run section 3, which is where the merge, imputing & standardization
 - The fourth step is to run section 4, which was where we created the new table (our final table) in postgreSQL
@@ -313,18 +319,21 @@ Once the tables are created in postgres you can start airflow
 
 8.1 Airflow Standalone
 The first step now is to do the following command in a different terminal but not from vscode, preferably a cmd of the operating system and inside the project directory:
-bash
-export AIRFLOW_HOME=$(pwd)
 
+```bash
+export AIRFLOW_HOME=$(pwd)
+```
 
 Once the command is done, you can do the command from Visual Studio Code but in this way:
-bash
+```bash
 export AIRFLOW_HOME=${pwd}
+```
 
 
 Once that command is done the next command is:
-bash
+```bash
 airflow standalone
+```
 
 Once the airflow command is done it will start running
 
@@ -349,27 +358,31 @@ Now you can start running the dag, once the entire dag has been run you should s
 
 #### Considerations: Just when the dag goes through the task (transform_db_task) I recommend you go to a cmd of the operating system and do the following:
 
-bash
+```bash
 cd Folder_Where_Kafka_Has_Been_Extracted
+```
+
+```bash
 cd kafka
+```
 
 And we recommed you to open 3 differents terminals and that within the 3 terminals you are inside kafka (cd kafka).
 
 once inside the kafka folder, this command will be done in the first terminal:
-bash
+```bash
 ./bin/zookeeper-server-start.sh config/zookeeper.properties
-
+```
 
 In the second terminal, you will do the following command:
-bash
+```bash
 ./bin/kafka-server-start.sh config/server.properties
-
+```
 
 In the third terminal, you will do the following command:
 
-bash
+```bash
 ./bin/kafka-topics.sh --delete --topic linkedin.streaming --bootstrap-server localhost:9092
-
+```
 
 Finally, you will go to the consumer.py file (which is located inside the dags/dags_connections folder) and you will run the consumer file, the producer does not need to run it because it will be done automatically when the dag reaches the producer task
 
