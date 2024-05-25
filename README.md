@@ -220,7 +220,7 @@ We connect to postgres like this in steps 8, 8.1, 8.2 and 8.3, we select the tab
 And now we can make the graphs. This is our API dashboard: [Our API Dashboard](Visualizations/dimensional_model_visual.pdf)
 
 
-# Linkedin Job Postings - ETL - Part #3 (Final Part) :chart_with_downwards_trend: :open_file_folder:
+# Linkedin Job Postings - ETL - Part #3 (Final Part)
 
 ## Overview
 To carry out the third and final part of our project, we include new tools and processes such as Apache Airflow for the automation of our project and the tasks that will be shown later. Additionally, the Apache Kafka "tool" was implemented to stream the data through a topic that was created to be able to stream the data through a producer and be received by a consumer to be sent to a Power BI real-time dashboard. Finally in this final stage of our project, we added Great Expectations to our project. This process allowed us to perform a thorough validation, ensuring that the data meets predefined standards and criteria. Through Great Expectations, we verify crucial aspects such as consistency, integrity, validity and accuracy of our data sets. This included checking consistency between different fields, identifying outliers or null values, as well as validating data formats and ranges.
@@ -260,5 +260,165 @@ We use the following expectations:
 
 - VM with Ubuntu System for Final Part
 
+
+## Project Workflow
+This is the project workflow:
+![workflow](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/f2967812-4ee8-415c-a6b9-bd37d9e31225)
+
+
+## How to run this project:
+
+First of all, to be able to run the project and later kafka, you need to have kafka installed in the virtual machine and kafka-python within the virtual environment and Apache Airflow. Here are the steps to run the project:
+
+![Kafka Guide](https://www.youtube.com/watch?v=yips4_qd1j0&ab_channel=EazyPeazyGeeky)
+
+Once Kafka is installed, a Kafka folder should be created where you have downloaded it and subsequently extracted it.
+
+1. Go to Visual Studio Code and clone the repository:
+bash
+https://github.com/mdlangeles/linkedin_job_postings_etl.git
+
+
+2. Go to project directory:
+bash
+cd linkedin_job_postings_etl
+
+3. Create a virtual environment:
+bash
+python3 -m venv venv
+
+4. Activate virtual environment:
+bash
+source bin/venv/activate
+
+5. Install libraries:
+bash
+pip install -r requirements.txt
+
+6. Create a database in PostgreSQL
+7. The project have an Jupyter Notebook, "eda.ipynb" and this notebook is divided into 4 sections :
+- We recommend you start with section #1: Import the modules, make the connection to the database, and load the data into it.
+    ##### Note: In this section, you must change the name of the JSON file to the name of the JSON file that you need to create to be able to make the connection to the database. In our case the name of my file was keys.json. If you decide to name your file the same way, remember to change the values specified in the Database Configuration field located in the README.
+- The second step is to execute section 2, which is where the exploratory analysis carried out on the 3 tables with which we initially worked is located.
+- The third step is to run section 3, which is where the merge, imputing & standardization
+- The fourth step is to run section 4, which was where we created the new table (our final table) in postgreSQL
+
+
+#### Note: If you still have doubts, you can review section 1 and 2 of the readme to understand well and replicate the steps for creating the tables.
+
+
+8. Running airflow
+
+Once the tables are created in postgres you can start airflow
+
+8.1 Airflow Standalone
+The first step now is to do the following command in a different terminal but not from vscode, preferably a cmd of the operating system and inside the project directory:
+bash
+export AIRFLOW_HOME=$(pwd)
+
+
+Once the command is done, you can do the command from Visual Studio Code but in this way:
+bash
+export AIRFLOW_HOME=${pwd}
+
+
+Once that command is done the next command is:
+bash
+airflow standalone
+
+Once the airflow command is done it will start running
+
+
+8.2 Airflow Login
+Once airflow has started running, the password to access airflow will appear in the console as follows:
+
+![WhatsApp Image 2024-05-24 at 9 49 11 PM](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/6c0ff4f1-bf62-4895-9002-e286c1ed7320)
+
+
+Then, you will access the url localhost:8080 where you will be greeted with a login menu like this:
+![Captura desde 2024-05-24 21-52-30](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/2eb366f3-1e5d-47a6-8ede-529e5cd85ee4)
+
+You will set the user admin and the password that appeared in the console (In any case, at the root of the project a file standalone_admin_password.txt will be created) where the password will be for the user and be able to enter airflow
+
+Once you have logged in, the created dag will appear and you will be able to access it and it will look something like this:
+![Captura desde 2024-05-24 21-56-51](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/58d11082-534c-4d58-8aee-697e4f3a869c)
+
+Now you can start running the dag, once the entire dag has been run you should see something like this:
+![WhatsApp Image 2024-05-24 at 9 26 27 PM (1)](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/c4813555-4ac3-4c6d-92ba-500b6807c84a)
+
+
+#### Considerations: Just when the dag goes through the task (transform_db_task) I recommend you go to a cmd of the operating system and do the following:
+
+bash
+cd Folder_Where_Kafka_Has_Been_Extracted
+cd kafka
+
+And we recommed you to open 3 differents terminals and that within the 3 terminals you are inside kafka (cd kafka).
+
+once inside the kafka folder, this command will be done in the first terminal:
+bash
+./bin/zookeeper-server-start.sh config/zookeeper.properties
+
+
+In the second terminal, you will do the following command:
+bash
+./bin/kafka-server-start.sh config/server.properties
+
+
+In the third terminal, you will do the following command:
+
+bash
+./bin/kafka-topics.sh --delete --topic linkedin.streaming --bootstrap-server localhost:9092
+
+
+Finally, you will go to the consumer.py file (which is located inside the dags/dags_connections folder) and you will run the consumer file, the producer does not need to run it because it will be done automatically when the dag reaches the producer task
+
+#### Note: You should keep in mind that the process may take a little while because there are several tasks and the process is somewhat delayed and slow.
+
+Once the data has been sent, you will go to power BI, in our case Power BI cloud and you will do the following:
+
+
+![WhatsApp Image 2024-05-24 at 8 15 25 PM](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/35a850d5-b364-47d7-bda9-61b9f005d277)
+
+Select the Dashboard option or in Spanish "Panel"
+
+
+Select Edit option and then add icon:
+
+![icono](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/25f8db93-057a-45c6-884d-c8375adc63e9)
+
+
+Select "Datos de transmision personalizados"
+
+![WhatsApp Image 2024-05-24 at 8 15 46 PM](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/743271aa-4125-4a3a-a502-9ef6ce494234)
+
+
+And there you can add a new set of transmission data
+
+![Captura desde 2024-05-24 22-14-42](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/23ca9fc6-fd32-45b3-aa6b-0676fbc0aac5)
+
+The API option is selected:
+
+![1f89b58a-5d85-4656-be92-af8dbfe74aea](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/24f27553-31c9-43b3-8300-fa7ff67732c0)
+
+Once you select the API, you will be asked to enter the columns that you will use for the transmission and their respective data type. Once this is completed, the url of the dashboard will appear in real time like this:
+
+![Captura desde 2024-05-24 22-16-49](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/353d079c-4a1c-42c9-b296-3eeb2ce7aad7)
+
+Once you create the new set, a blank canvas will open where you can put the graphs and the data will arrive and complete the dashboard like this:
+
+![Captura desde 2024-05-24 22-18-41](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/fd7aea5f-64f9-4c44-bada-443572de621a)
+
+In our case, once the data arrived, this is how the dashboard looked like:
+
+![00422aa4-a6f7-4c43-b890-a63c86d3af8e](https://github.com/mdlangeles/linkedin_job_postings_etl/assets/111546312/76b23e81-f1ad-4716-b044-51daae0973de)
+
+Here's a video that you can play to see the real process:
+![Video Project](https://drive.google.com/file/d/1JHuj9ig3mrOFlDgkdsbDa80e4lONRu99/view)
+
+## Thanks:
+This is how our project ends, once the dashboard has run you can check pgadmin where you will see the dimensions and the fact table that was created during the load task.
+
+Thank you for visiting our repository
 
 
