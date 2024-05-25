@@ -1,5 +1,5 @@
-# Linkedin Job Postings - ETL - Part # 1
-By: Emmanuel Quintero & María de los Ángeles Amú
+# Linkedin Job Postings - ETL - Part # 1 :chart_with_downwards_trend: :open_file_folder:
+## By: Emmanuel Quintero & María de los Ángeles Amú
 
 ## Overview
 In this project, we are going to analyze, manipulate and visualize data about job postings in Linkedin, as part of an ETL project. We used SQLAlchemy as an Object-Relational Mapping (ORM) tool connected to PostgreSQL, and we will generate visual representations using PowerBI.
@@ -170,7 +170,7 @@ pip install requirements
 ## Our Dashboard
 Here is our dashboard: [Our Dashboard](https://app.powerbi.com/view?r=eyJrIjoiNjM2ZTg5NGItMDUwZi00YmRlLTg4M2UtNDRmNjEyZDMwYTU1IiwidCI6IjY5M2NiZWEwLTRlZjktNDI1NC04OTc3LTc2ZTA1Y2I1ZjU1NiIsImMiOjR9)
 
-# Linkedin Job Postings - ETL - Part # 2
+# Linkedin Job Postings - ETL - Part # 2 :chart_with_downwards_trend: :open_file_folder:
 
 ## Overview
 To carry out the second part of our project, we make our dimensional model from our dataset resulting from the first part of the project. Subsequently, we look for an API to make queries to bring data about more job postings and to be able to further expand our original dataset taking into account its columns. For this second part, we used the same tools used for the development of the first part, only a new one was added, which was Rapid Api, which was where we found the API to bring more job postings.
@@ -220,7 +220,7 @@ We connect to postgres like this in steps 8, 8.1, 8.2 and 8.3, we select the tab
 And now we can make the graphs. This is our API dashboard: [Our API Dashboard](Visualizations/dimensional_model_visual.pdf)
 
 
-# Linkedin Job Postings - ETL - Part #3 (Final Part)
+# Linkedin Job Postings - ETL - Part #3 (Final Part) :chart_with_downwards_trend: :open_file_folder:
 
 ## Overview
 To carry out the third and final part of our project, we include new tools and processes such as Apache Airflow for the automation of our project and the tasks that will be shown later. Additionally, the Apache Kafka "tool" was implemented to stream the data through a topic that was created to be able to stream the data through a producer and be received by a consumer to be sent to a Power BI real-time dashboard. Finally in this final stage of our project, we added Great Expectations to our project. This process allowed us to perform a thorough validation, ensuring that the data meets predefined standards and criteria. Through Great Expectations, we verify crucial aspects such as consistency, integrity, validity and accuracy of our data sets. This included checking consistency between different fields, identifying outliers or null values, as well as validating data formats and ranges.
