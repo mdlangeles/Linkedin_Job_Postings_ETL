@@ -1,4 +1,5 @@
-# Linkedin Job Postings - ETL - Part # 1 :chart_with_downwards_trend: :open_file_folder:
+# Linkedin Job Postings <img src="https://github.com/user-attachments/assets/db0a41d5-d211-4066-9853-1b93d96c938d" alt="Descripción de la imagen" width="50" height="50">
+
 ## By: Emmanuel Quintero & María de los Ángeles Amú
 
 ## Overview
